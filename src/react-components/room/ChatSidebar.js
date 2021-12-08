@@ -145,7 +145,9 @@ export const LogMessageType = {
   audioSuspended: "audioSuspended",
   audioResumed: "audioResumed",
   joinFailed: "joinFailed",
-  avatarChanged: "avatarChanged"
+  avatarChanged: "avatarChanged",
+  moveSucssful: "moveSucssful",
+  moveFailed: "moveFailed"
 };
 
 const logMessages = defineMessages({
@@ -233,6 +235,14 @@ const logMessages = defineMessages({
   [LogMessageType.avatarChanged]: {
     id: "chat-sidebar.log-message.avatar-changed",
     defaultMessage: "Your avatar has been changed."
+  },
+  [LogMessageType.moveSucssful]: {
+    id: "chat-sidebar.log-message.move-sucssful",
+    defaultMessage: "Your avatar move into the avatar sucssfully."
+  },
+  [LogMessageType.moveFailed]: {
+    id: "chat-sidebar.log-message.move-failed",
+    defaultMessage: "Move failed, there is no such avatar."
   }
 });
 

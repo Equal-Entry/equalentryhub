@@ -7,6 +7,9 @@ import ducky from "./assets/models/DuckyMesh.glb";
 import { EventTarget } from "event-target-shim";
 import { ExitReason } from "./react-components/room/ExitedRoomScreen";
 import { LogMessageType } from "./react-components/room/ChatSidebar";
+import { getAvatarFromName } from "./utils/accessbility";
+import { SOUND_TELEPORT_END } from "./systems/sound-effects-system";
+
 
 let uiRoot;
 // Handles user-entered messages
@@ -212,6 +215,44 @@ export default class MessageDispatch extends EventTarget {
           }
         }
         break;
+      case "move":
+        {
+          var myself_el
+          var el
+          for (let p of window.APP.componentRegistry["player-info"]){
+            if (p.el.id == 'avatar-rig'){
+              myself_el = getAvatarFromName(p.displayName)
+            } if(args == p.displayName){
+              el = getAvatarFromName(p.displayName)
+            }
+          }
+
+          if (el == null){
+
+            this.log(LogMessageType.moveFailed);
+
+          }else{
+
+            var characterController = myself_el.sceneEl.systems["hubs-systems"].characterController;
+
+            const targetMatrix = new THREE.Matrix4()
+            targetMatrix.copy(el.object3D.matrix)
+            targetMatrix.multiply(new THREE.Matrix4().makeRotationY(myself_el.object3D.position.angleTo(el.object3D.position)).makeTranslation(0, 0, 1))
+            
+            characterController.travelByWaypoint(targetMatrix, true, true)
+            
+            var camera = document.querySelector("#avatar-pov-node").object3D
+            const targetHead = new THREE.Vector3();
+            el.object3D.getWorldPosition(targetHead)
+            targetHead.setComponent(1, targetHead.y + 1.6)
+            camera.lookAt(targetHead)
+      
+            characterController.enqueueInPlaceRotationAroundWorldUp(Math.PI)
+            characterController.sfx.playSoundOneShot(SOUND_TELEPORT_END)
+
+            this.log(LogMessageType.moveSucssful);
+          }
+        }
     }
   };
 }

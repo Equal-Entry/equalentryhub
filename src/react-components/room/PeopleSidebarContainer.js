@@ -11,7 +11,7 @@ export function userFromPresence(sessionId, presence, micPresences, mySessionId)
   return { id: sessionId, isMe: mySessionId === sessionId, micPresence, ...meta };
 }
 
-function usePeopleList(presences, mySessionId, micUpdateFrequency = 500) {
+export function usePeopleList(presences, mySessionId, micUpdateFrequency = 500) {
   const [people, setPeople] = useState([]);
 
   useEffect(

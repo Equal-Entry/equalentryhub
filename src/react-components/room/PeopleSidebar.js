@@ -17,7 +17,7 @@ import { ReactComponent as PeopleIcon } from "../icons/People.svg";
 import { List, ButtonListItem } from "../layout/List";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SOUND_TELEPORT_END } from "../../systems/sound-effects-system";
-import Q from "q";
+import { getAvatarFromName } from "../../utils/accessbility";
 
 function getDeviceLabel(ctx, intl) {
   if (ctx) {
@@ -93,15 +93,7 @@ function getPersonName(person, intl) {
   return person.profile.displayName + (person.isMe ? ` (${you})` : "");
 }
 
-function getAvatarFromName(name){
-  for (let a of document.querySelectorAll("[networked-avatar]") ){
-    var el = document.querySelector("#"+a.id)
-    if ( name.trim() == el.components["player-info"].displayName.trim() ) return el
-  }
-  return null
-}
-
-function moveToFunc(people, person, intl, e){
+function moveToActionbyButton(people, person, intl, e){
 
   e.stopPropagation()
 
@@ -186,7 +178,7 @@ export function PeopleSidebar({ people, onSelectPerson, onClose, showMuteAll, on
               )}
               
               <p className={styles.moveTo}>
-                {person.isMe || person.presence == "lobby" ? null : <Button preset="primary" sm onClick={e => moveToFunc(people, person, intl, e)} style={{float: 'right'}}>
+                {person.isMe || person.presence == "lobby" ? null : <Button preset="primary" sm onClick={e => moveToActionbyButton(people, person, intl, e)} style={{float: 'right'}}>
                   <PeopleIcon width={16} height={16} />
                   <span>Move to</span>
                 </Button>}
