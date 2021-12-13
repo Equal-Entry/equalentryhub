@@ -209,10 +209,10 @@ export default class SceneEntryManager {
 
   _setupMedia = () => {
     const offset = { x: 0, y: 0, z: -1.5 };
-    const spawnMediaInfrontOfPlayer = (src, contentOrigin) => {
+    const spawnMediaInfrontOfPlayer = (src, contentOrigin, optionalName) => {
       if (!this.hubChannel.can("spawn_and_move_media")) return;
       const { entity, orientation } = addMedia(
-        src,
+        (!!optionalName) ? src + "|" + optionalName : src,
         "#interactable-media",
         contentOrigin,
         null,
@@ -226,6 +226,7 @@ export default class SceneEntryManager {
           orientation: or
         });
       });
+      entity.object3D.name = optionalName;
 
       return entity;
     };
@@ -428,10 +429,10 @@ export default class SceneEntryManager {
       // If user has HMD lifted up or gone through interstitial, delay spawning for now. eventually show a modal
       if (delaySpawn) {
         setTimeout(() => {
-          spawnMediaInfrontOfPlayer(entry.url, ObjectContentOrigins.URL);
+          spawnMediaInfrontOfPlayer(entry.url, ObjectContentOrigins.URL, entry.name);
         }, 3000);
       } else {
-        spawnMediaInfrontOfPlayer(entry.url, ObjectContentOrigins.URL);
+        spawnMediaInfrontOfPlayer(entry.url, ObjectContentOrigins.URL, entry.name);
       }
     });
 

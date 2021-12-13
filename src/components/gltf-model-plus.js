@@ -740,8 +740,10 @@ AFRAME.registerComponent("gltf-model-plus", {
     if (this.data.batch && this.model) {
       this.el.sceneEl.systems["hubs-systems"].batchManagerSystem.removeObject(this.el.object3DMap.mesh);
     }
-    const src = resolveAsset(this.data.src);
+    var src = resolveAsset(this.data.src);
     if (src) {
+      if(src.includes("|")) src = src.split("|")[0]
+      console.log("realeasing " + src)
       gltfCache.release(src);
     }
   },
@@ -757,6 +759,13 @@ AFRAME.registerComponent("gltf-model-plus", {
   async applySrc(src, contentType) {
     try {
       if (src === this.lastSrc) return;
+
+      var readableName  
+      if (src.includes("|")){
+        const srcWithName = src.split("|")
+        src = srcWithName[0];
+        readableName = srcWithName[1];
+      }
 
       const lastSrc = this.lastSrc;
       this.lastSrc = src;
@@ -842,6 +851,8 @@ AFRAME.registerComponent("gltf-model-plus", {
       this.el.setObject3D("mesh", object3DToSet);
 
       rewires.forEach(f => f());
+
+      if (!!readableName) object3DToSet.parent.name = readableName;
 
       object3DToSet.visible = true;
       this.el.emit("model-loaded", { format: "gltf", model: object3DToSet });

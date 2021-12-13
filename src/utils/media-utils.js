@@ -37,7 +37,12 @@ export const getDefaultResolveQuality = (is360 = false) => {
   return !is360 ? (useLowerQuality ? "low" : "high") : useLowerQuality ? "low_360" : "high_360";
 };
 
-export const resolveUrl = async (url, quality = null, version = 1, bustCache) => {
+export const resolveUrl = async (url, quality = null, version = 1, bustCache, readableName) => {
+  if(url.includes("|")){
+    const urlWithName = url.split("|");
+    readableName.name = urlWithName[1];
+    url = urlWithName[0];
+  }
   const key = `${url}_${version}`;
   if (!bustCache && resolveUrlCache.has(key)) return resolveUrlCache.get(key);
 
