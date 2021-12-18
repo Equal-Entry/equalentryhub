@@ -147,7 +147,9 @@ export const LogMessageType = {
   joinFailed: "joinFailed",
   avatarChanged: "avatarChanged",
   moveSucssful: "moveSucssful",
-  moveFailed: "moveFailed"
+  moveFailed: "moveFailed",
+  roomInfo: "roomInfo",
+  noRoomInfo: "noRoomInfo"
 };
 
 const logMessages = defineMessages({
@@ -238,11 +240,19 @@ const logMessages = defineMessages({
   },
   [LogMessageType.moveSucssful]: {
     id: "chat-sidebar.log-message.move-sucssful",
-    defaultMessage: "Your avatar move into the avatar sucssfully."
+    defaultMessage: "Your avatar move into the target avatar sucssfully."
   },
   [LogMessageType.moveFailed]: {
     id: "chat-sidebar.log-message.move-failed",
     defaultMessage: "Move failed, there is no such avatar."
+  },
+  [LogMessageType.roomInfo]: {
+    id: "chat-sidebar.log-message.room-info",
+    defaultMessage: "Room description: {info}"
+  },
+  [LogMessageType.noRoomInfo]: {
+    id: "chat-sidebar.log-message.no-room-info",
+    defaultMessage: "Room description not defined."
   }
 });
 
@@ -307,7 +317,7 @@ export function SystemMessage(props) {
     <li className={classNames(styles.messageGroup, styles.systemMessage)}>
       {props.showLineBreak && <hr />}
       <p className={styles.messageGroupLabel}>
-        <i>{formatSystemMessage(props, intl)}</i>
+        <i  role="alert">{formatSystemMessage(props, intl)}</i>
         <span>
           <FormattedRelativeTime updateIntervalInSeconds={10} value={(props.timestamp - Date.now()) / 1000} />
         </span>

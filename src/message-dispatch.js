@@ -253,6 +253,14 @@ export default class MessageDispatch extends EventTarget {
             this.log(LogMessageType.moveSucssful);
           }
         }
+        case "describe":
+          {
+            if (window.APP.hub.description == null){
+              this.log(LogMessageType.noRoomInfo)
+            }else{
+              this.log(LogMessageType.roomInfo, {info: window.APP.hub.description})
+            }
+          }
     }
   };
 }
