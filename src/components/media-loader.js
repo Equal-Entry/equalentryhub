@@ -328,6 +328,8 @@ AFRAME.registerComponent("media-loader", {
     if (versionChanged) {
       this.el.emit("media_refreshing");
 
+      forceLocalRefresh = true
+
       // Don't animate if its a refresh.
       this.data.animate = false;
 

@@ -81,7 +81,7 @@ export function ObjectListProvider({ scene, children }) {
         
         const objects = scene.systems["listed-media"].els.sort(mediaSort).map(el => ({
           id: el.object3D.id,
-          name: el.object3D.name == "" ? getDisplayString(el) : el.object3D.name,
+          name: getDisplayString(el),
           type: getMediaType(el),
           el
         }));

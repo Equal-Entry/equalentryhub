@@ -5,6 +5,7 @@ import { ReactComponent as PinIcon } from "../icons/Pin.svg";
 import { ReactComponent as LinkIcon } from "../icons/Link.svg";
 import { ReactComponent as GoToIcon } from "../icons/GoTo.svg";
 import { ReactComponent as DeleteIcon } from "../icons/Delete.svg";
+import { ReactComponent as ObjectIcon } from "../icons/Object.svg";
 import { ObjectMenu, ObjectMenuButton } from "./ObjectMenu";
 import { Sidebar } from "../sidebar/Sidebar";
 
@@ -33,6 +34,10 @@ export const Base = () => (
           <DeleteIcon />
           <span>Delete</span>
         </ObjectMenuButton>
+        <ObjectMenuButton>
+          <ObjectIcon />
+          <span>Rename</span>
+        </ObjectMenuButton>
       </ObjectMenu>
     }
   />
@@ -58,6 +63,10 @@ export const WithSidebarOpen = () => (
         <ObjectMenuButton>
           <DeleteIcon />
           <span>Delete</span>
+        </ObjectMenuButton>
+        <ObjectMenuButton>
+          <ObjectIcon />
+          <span>Rename</span>
         </ObjectMenuButton>
       </ObjectMenu>
     }

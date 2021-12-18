@@ -17,6 +17,7 @@ import { ReactComponent as GoToIcon } from "../icons/GoTo.svg";
 import { ReactComponent as DeleteIcon } from "../icons/Delete.svg";
 import { ReactComponent as AvatarIcon } from "../icons/Avatar.svg";
 import { ReactComponent as HideIcon } from "../icons/Hide.svg";
+import { ReactComponent as ObjectIcon } from "../icons/Object.svg";
 import { FormattedMessage } from "react-intl";
 
 function MyMenuItems({ onOpenProfile }) {
@@ -58,7 +59,7 @@ PlayerMenuItems.propTypes = {
   deselectObject: PropTypes.func.isRequired
 };
 
-function ObjectMenuItems({ hubChannel, scene, activeObject, deselectObject, onGoToObject }) {
+function ObjectMenuItems({ hubChannel, scene, activeObject, deselectObject, onGoToObject, onClickRename }) {
   const { canPin, isPinned, togglePinned } = usePinObject(hubChannel, scene, activeObject);
   const { canRemoveObject, removeObject } = useRemoveObject(hubChannel, scene, activeObject);
   const { canGoTo, goToSelectedObject } = useGoToSelectedObject(scene, activeObject);
@@ -109,6 +110,14 @@ function ObjectMenuItems({ hubChannel, scene, activeObject, deselectObject, onGo
           <FormattedMessage id="object-menu.delete-object-button" defaultMessage="Delete" />
         </span>
       </ObjectMenuButton>
+      <ObjectMenuButton onClick={() => {
+          onClickRename(activeObject, deselectObject);
+        }}>
+          <ObjectIcon />
+          <span>
+            <FormattedMessage id="object-menu.object-rename-button" defaultMessage="Rename" />
+          </span>
+      </ObjectMenuButton>
     </>
   );
 }
@@ -121,7 +130,7 @@ ObjectMenuItems.propTypes = {
   onGoToObject: PropTypes.func.isRequired
 };
 
-export function ObjectMenuContainer({ hubChannel, scene, onOpenProfile, onGoToObject }) {
+export function ObjectMenuContainer({ hubChannel, scene, onOpenProfile, onGoToObject, onClickRename }) {
   const {
     objects,
     activeObject,
@@ -146,13 +155,15 @@ export function ObjectMenuContainer({ hubChannel, scene, onOpenProfile, onGoToOb
         activeObject={activeObject}
         deselectObject={deselectObject}
         onGoToObject={onGoToObject}
+        onClickRename = {onClickRename}
       />
     );
   }
 
   return (
     <ObjectMenu
-      title={<FormattedMessage id="object-menu.title" defaultMessage="Object" />}
+      // title={<FormattedMessage id="object-menu.title" defaultMessage="Object" />} orginal l10n for object
+      title = {activeObject.name}
       currentObjectIndex={objects.indexOf(activeObject)}
       objectCount={objects.length}
       onClose={deselectObject}
@@ -171,5 +182,6 @@ ObjectMenuContainer.propTypes = {
   hubChannel: PropTypes.object.isRequired,
   scene: PropTypes.object.isRequired,
   onOpenProfile: PropTypes.func.isRequired,
-  onGoToObject: PropTypes.func.isRequired
+  onGoToObject: PropTypes.func.isRequired,
+  onClickRename: PropTypes.func.isRequired
 };

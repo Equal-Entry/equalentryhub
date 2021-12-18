@@ -94,6 +94,7 @@ import { TweetModalContainer } from "./room/TweetModalContainer";
 import { TipContainer, FullscreenTip } from "./room/TipContainer";
 import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
+import { RenameObjectModal } from "./room/RenameObjectModal";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 
@@ -197,7 +198,11 @@ class UIRoot extends Component {
     objectInfo: null,
     objectSrc: "",
     sidebarId: null,
-    presenceCount: 0
+    presenceCount: 0,
+
+    showRename: false,
+    renameTarget: null,
+    deselectObject: null
   };
 
   constructor(props) {
@@ -1384,6 +1389,10 @@ class UIRoot extends Component {
                       </ContentMenu>
                     )}
                     {!entered && !streaming && !isMobile && streamerName && <SpectatingLabel name={streamerName} />}
+                    {this.state.showRename ? <RenameObjectModal show={this.state.showRename} 
+                      onCancel = {() => this.setState({ showRename: false })} 
+                      targetObject={this.state.renameTarget} 
+                      deselectObject = {this.state.deselectObject}></RenameObjectModal> : null}
                     {this.props.activeObject && (
                       <ObjectMenuContainer
                         hubChannel={this.props.hubChannel}
@@ -1394,6 +1403,12 @@ class UIRoot extends Component {
                             this.setSidebar(null);
                           }
                         }}
+                        onClickRename = {(activeObject, deselectObject) => {
+                          this.setState({ showRename: true });
+                          this.setState({ renameTarget: activeObject })
+                          this.setState({ deselectObject: deselectObject})
+
+                       }}
                       />
                     )}
                     {this.state.sidebarId !== "chat" &&
