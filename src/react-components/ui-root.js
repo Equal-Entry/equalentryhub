@@ -95,6 +95,7 @@ import { TipContainer, FullscreenTip } from "./room/TipContainer";
 import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
 import { RenameObjectModal } from "./room/RenameObjectModal";
+import { ObjectDescribeModal } from "./room/ObjectDescribeModal";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 
@@ -202,7 +203,9 @@ class UIRoot extends Component {
 
     showRename: false,
     renameTarget: null,
-    deselectObject: null
+    deselectObject: null,
+
+    showEditDesciption: false
   };
 
   constructor(props) {
@@ -1389,10 +1392,16 @@ class UIRoot extends Component {
                       </ContentMenu>
                     )}
                     {!entered && !streaming && !isMobile && streamerName && <SpectatingLabel name={streamerName} />}
-                    {this.state.showRename ? <RenameObjectModal show={this.state.showRename} 
+                    {
+                    this.state.showRename ? <RenameObjectModal show={this.state.showRename} 
                       onCancel = {() => this.setState({ showRename: false })} 
                       targetObject={this.state.renameTarget} 
-                      deselectObject = {this.state.deselectObject}></RenameObjectModal> : null}
+                      deselectObject = {this.state.deselectObject}></RenameObjectModal> : null
+                      }
+                    {
+                    this.state.showEditDesciption ? <ObjectDescribeModal show={this.state.showEditDesciption} targetObject={this.state.renameTarget} 
+                      onCancel = {() => this.setState({ showEditDesciption: false })} ></ObjectDescribeModal> : null
+                    }
                     {this.props.activeObject && (
                       <ObjectMenuContainer
                         hubChannel={this.props.hubChannel}
@@ -1402,13 +1411,16 @@ class UIRoot extends Component {
                           if (this.props.breakpoint === "sm") {
                             this.setSidebar(null);
                           }
-                        }}
+                        }}onClickEditDesc
                         onClickRename = {(activeObject, deselectObject) => {
                           this.setState({ showRename: true });
                           this.setState({ renameTarget: activeObject })
                           this.setState({ deselectObject: deselectObject})
-
-                       }}
+                        }}
+                        onClickEditDesc = {(activeObject) => {
+                          this.setState({ showEditDesciption: true });
+                          this.setState({ renameTarget: activeObject })
+                        }}
                       />
                     )}
                     {this.state.sidebarId !== "chat" &&

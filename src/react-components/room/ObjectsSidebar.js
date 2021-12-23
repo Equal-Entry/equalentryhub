@@ -12,6 +12,7 @@ import { ReactComponent as VideoIcon } from "../icons/Video.svg";
 import { ReactComponent as AudioIcon } from "../icons/Audio.svg";
 import { ReactComponent as TextDocumentIcon } from "../icons/TextDocument.svg";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { Button } from '../input/Button';
 
 function getObjectIcon(type) {
   switch (type) {
@@ -29,6 +30,12 @@ function getObjectIcon(type) {
   }
 }
 
+function showDesc(e, targetObject, onSelectDesc){
+
+  e.stopPropagation()
+  onSelectDesc(targetObject)
+}
+
 const objectTypeNames = defineMessages({
   video: { id: "objects-sidebar.object-type.video", defaultMessage: "Video" },
   audio: { id: "objects-sidebar.object-type.audio", defaultMessage: "Audio" },
@@ -38,7 +45,7 @@ const objectTypeNames = defineMessages({
   default: { id: "objects-sidebar.object-type.default", defaultMessage: "Object" }
 });
 
-export function ObjectsSidebarItem({ selected, object, ...rest }) {
+export function ObjectsSidebarItem({ selected, object, onSelectDesc, ...rest }) {
   const intl = useIntl();
   const ObjectTypeIcon = getObjectIcon(object.type);
 
@@ -57,6 +64,11 @@ export function ObjectsSidebarItem({ selected, object, ...rest }) {
     >
       <ObjectTypeIcon />
       <p>{object.name}</p>
+      <p className={styles.description}>
+        <Button preset="primary" sm onClick={e => showDesc(e, object, onSelectDesc)} style={{float: 'right'}}>
+          <span>View Description</span>
+        </Button>
+      </p>
     </ButtonListItem>
   );
 }

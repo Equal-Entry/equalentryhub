@@ -18,6 +18,7 @@ import { ReactComponent as DeleteIcon } from "../icons/Delete.svg";
 import { ReactComponent as AvatarIcon } from "../icons/Avatar.svg";
 import { ReactComponent as HideIcon } from "../icons/Hide.svg";
 import { ReactComponent as ObjectIcon } from "../icons/Object.svg";
+import { ReactComponent as AddIcon } from "../icons/Add.svg";
 import { FormattedMessage } from "react-intl";
 
 function MyMenuItems({ onOpenProfile }) {
@@ -59,11 +60,13 @@ PlayerMenuItems.propTypes = {
   deselectObject: PropTypes.func.isRequired
 };
 
-function ObjectMenuItems({ hubChannel, scene, activeObject, deselectObject, onGoToObject, onClickRename }) {
+function ObjectMenuItems({ hubChannel, scene, activeObject, deselectObject, onGoToObject, onClickRename, onClickEditDesc }) {
   const { canPin, isPinned, togglePinned } = usePinObject(hubChannel, scene, activeObject);
   const { canRemoveObject, removeObject } = useRemoveObject(hubChannel, scene, activeObject);
   const { canGoTo, goToSelectedObject } = useGoToSelectedObject(scene, activeObject);
   const url = getObjectUrl(activeObject);
+
+  const canRenameOrDescribe = hubChannel.canOrWillIfCreator("update_hub")
 
   return (
     <>
@@ -88,6 +91,7 @@ function ObjectMenuItems({ hubChannel, scene, activeObject, deselectObject, onGo
       <ObjectMenuButton
         disabled={!canGoTo}
         onClick={() => {
+          console.log(activeObject.el.components["media-loader"])
           goToSelectedObject();
           deselectObject();
           onGoToObject();
@@ -110,14 +114,22 @@ function ObjectMenuItems({ hubChannel, scene, activeObject, deselectObject, onGo
           <FormattedMessage id="object-menu.delete-object-button" defaultMessage="Delete" />
         </span>
       </ObjectMenuButton>
-      <ObjectMenuButton onClick={() => {
+      {canRenameOrDescribe && <ObjectMenuButton onClick={() => {
           onClickRename(activeObject, deselectObject);
         }}>
           <ObjectIcon />
           <span>
             <FormattedMessage id="object-menu.object-rename-button" defaultMessage="Rename" />
           </span>
-      </ObjectMenuButton>
+      </ObjectMenuButton>}
+      {canRenameOrDescribe && <ObjectMenuButton onClick={() => {
+          onClickEditDesc(activeObject);
+        }}>
+          <AddIcon />
+          <span>
+            <FormattedMessage id="object-menu.object-describe-button" defaultMessage="Describe" />
+          </span>
+      </ObjectMenuButton>}
     </>
   );
 }
@@ -130,7 +142,7 @@ ObjectMenuItems.propTypes = {
   onGoToObject: PropTypes.func.isRequired
 };
 
-export function ObjectMenuContainer({ hubChannel, scene, onOpenProfile, onGoToObject, onClickRename }) {
+export function ObjectMenuContainer({ hubChannel, scene, onOpenProfile, onGoToObject, onClickRename, onClickEditDesc }) {
   const {
     objects,
     activeObject,
@@ -156,6 +168,7 @@ export function ObjectMenuContainer({ hubChannel, scene, onOpenProfile, onGoToOb
         deselectObject={deselectObject}
         onGoToObject={onGoToObject}
         onClickRename = {onClickRename}
+        onClickEditDesc = {onClickEditDesc}
       />
     );
   }
