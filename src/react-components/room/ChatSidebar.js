@@ -148,8 +148,14 @@ export const LogMessageType = {
   avatarChanged: "avatarChanged",
   moveSucssful: "moveSucssful",
   moveFailed: "moveFailed",
+  moveToMyself: "moveToMyself",
   roomInfo: "roomInfo",
-  noRoomInfo: "noRoomInfo"
+  noRoomInfo: "noRoomInfo",
+  listAvatars: "listAvatars",
+  noAvatars: "noAvatars",
+  listObjects: "listObjects",
+  noObjects: "noObjects",
+  objectInfo: "objectInfo"
 };
 
 const logMessages = defineMessages({
@@ -244,7 +250,11 @@ const logMessages = defineMessages({
   },
   [LogMessageType.moveFailed]: {
     id: "chat-sidebar.log-message.move-failed",
-    defaultMessage: "Move failed, there is no such avatar."
+    defaultMessage: "Move failed. There is no such avatar."
+  },
+  [LogMessageType.moveToMyself]: {
+    id: "chat-sidebar.log-message.move-myself",
+    defaultMessage: "Move failed. You cannot move to yourself."
   },
   [LogMessageType.roomInfo]: {
     id: "chat-sidebar.log-message.room-info",
@@ -253,6 +263,26 @@ const logMessages = defineMessages({
   [LogMessageType.noRoomInfo]: {
     id: "chat-sidebar.log-message.no-room-info",
     defaultMessage: "Room description not defined."
+  },
+  [LogMessageType.listAvatars]: {
+    id: "chat-sidebar.log-message.list-avatars",
+    defaultMessage: "This room has following avatars: {msg}"
+  },
+  [LogMessageType.noAvatars]: {
+    id: "chat-sidebar.log-message.no-avatars",
+    defaultMessage: "There is no other avatar in the room."
+  },
+  [LogMessageType.listObjects]: {
+    id: "chat-sidebar.log-message.list-objects",
+    defaultMessage: "This room has following objects: {msg}"
+  },
+  [LogMessageType.noObjects]: {
+    id: "chat-sidebar.log-message.no-objects",
+    defaultMessage: "This no objects in the room."
+  },
+  [LogMessageType.objectInfo]: {
+    id: "chat-sidebar.log-message.object-info",
+    defaultMessage: "Description of media object {object}: {info}"
   }
 });
 
