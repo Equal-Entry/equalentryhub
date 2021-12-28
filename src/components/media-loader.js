@@ -365,6 +365,7 @@ AFRAME.registerComponent("media-loader", {
 
       const parsedUrl = new URL(src);
 
+      var readableNameContainer = new Object();
       // We want to resolve and proxy some hubs urls, like rooms and scene links,
       // but want to avoid proxying assets in order for this to work in dev environments
       const isLocalModelAsset =
@@ -373,7 +374,6 @@ AFRAME.registerComponent("media-loader", {
       if (this.data.resolve && !src.startsWith("data:") && !src.startsWith("hubs:") && !isLocalModelAsset) {
         const is360 = !!(this.data.mediaOptions.projection && this.data.mediaOptions.projection.startsWith("360"));
         const quality = getDefaultResolveQuality(is360);
-        var readableNameContainer = new Object();
         const result = await resolveUrl(src, quality, version, forceLocalRefresh, readableNameContainer);
 
         canonicalUrl = result.origin;
