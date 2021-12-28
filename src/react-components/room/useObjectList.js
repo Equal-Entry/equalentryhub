@@ -6,8 +6,8 @@ function getDisplayString(el) {
   // Having a listed-media component does not guarantee the existence of a media-loader component,
   // so don't crash if there isn't one.
   const url = (el.components["media-loader"] && el.components["media-loader"].data.src) || "";
-  console.log(el.components["media-loader"].data)
-  if(!!el.components["media-loader"].data.mediaName) return el.components["media-loader"].data.mediaName;
+  console.log(el.components["media-loader"].data);
+  if (!!el.components["media-loader"].data.mediaName) return el.components["media-loader"].data.mediaName;
   const split = url.split("/");
   const resourceName = split[split.length - 1].split("?")[0];
   let httpIndex = -1;
@@ -79,7 +79,6 @@ export function ObjectListProvider({ scene, children }) {
   useEffect(
     () => {
       function updateMediaEntities() {
-        
         const objects = scene.systems["listed-media"].els.sort(mediaSort).map(el => ({
           id: el.object3D.id,
           name: getDisplayString(el),

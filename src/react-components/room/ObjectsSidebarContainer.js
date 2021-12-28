@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState }  from "react";
-import { FormattedMessage, useIntl, defineMessages } from "react-intl";
+import React, { useCallback, useRef, useState } from "react";
+import { FormattedMessage } from "react-intl";
 import PropTypes from "prop-types";
 import { NoObjects, ObjectsSidebar, ObjectsSidebarItem } from "./ObjectsSidebar";
 import { List } from "../layout/List";
@@ -31,38 +31,26 @@ export function ObjectsSidebarContainer({ onClose, hubChannel }) {
     [setSelectedDescObj]
   );
 
-  if(!!selectedDescObj){
+  if (!!selectedDescObj) {
+    const descInfo = [];
 
-    
-    const descInfo = []
-    
-    try{
-      const desc = JSON.parse(selectedDescObj.el.components["media-loader"].data.description)
-      for (let key in desc){
-        descInfo.push(
-        <InputField label={key}>
-              {desc[key]}
-        </InputField>
-        )
+    try {
+      const desc = JSON.parse(selectedDescObj.el.components["media-loader"].data.description);
+      for (let key in desc) {
+        descInfo.push(<InputField label={key}>{desc[key]}</InputField>);
       }
-    }catch(e){
+    } catch (e) {
       descInfo.push(
-        <InputField label={<FormattedMessage id="objects-sidebar.object-decs" defaultMessage="Object Description"/>}>
-            <FormattedMessage id="objects-sidebar.object-no-decs" defaultMessage="This object has no description yet."/>
+        <InputField label={<FormattedMessage id="objects-sidebar.object-decs" defaultMessage="Object Description" />}>
+          <FormattedMessage id="objects-sidebar.object-no-decs" defaultMessage="This object has no description yet." />
         </InputField>
-        )
+      );
     }
-
 
     return (
       <Sidebar
-        title={
-          <FormattedMessage
-            id="objects-sidebar.object-decs"
-            defaultMessage="Object Description"
-          />
-        }
-        beforeTitle = {<CloseButton onClick = {() => setSelectedDescObj(null)}></CloseButton>}
+        title={<FormattedMessage id="objects-sidebar.object-decs" defaultMessage="Object Description" />}
+        beforeTitle={<CloseButton onClick={() => setSelectedDescObj(null)} />}
       >
         <Column padding>
           <InputField label={<FormattedMessage id="room-sidebar.object-name" defaultMessage="Name" />}>
@@ -82,7 +70,7 @@ export function ObjectsSidebarContainer({ onClose, hubChannel }) {
             <ObjectsSidebarItem
               selected={selectedObject === object}
               object={object}
-              onSelectDesc = {setSelectedObj}
+              onSelectDesc={setSelectedObj}
               key={object.id}
               onClick={() => selectObject(object)}
               onMouseOver={() => focusObject(object)}

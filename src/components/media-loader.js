@@ -330,7 +330,7 @@ AFRAME.registerComponent("media-loader", {
     if (versionChanged) {
       this.el.emit("media_refreshing");
 
-      forceLocalRefresh = true
+      forceLocalRefresh = true;
 
       // Don't animate if its a refresh.
       this.data.animate = false;
@@ -569,7 +569,10 @@ AFRAME.registerComponent("media-loader", {
         this.el.setAttribute(
           "gltf-model-plus",
           Object.assign({}, this.data.mediaOptions, {
-            src: (readableNameContainer.name == undefined) ? accessibleUrl : accessibleUrl + "|" + readableNameContainer.name,
+            src:
+              readableNameContainer.name == undefined
+                ? accessibleUrl
+                : accessibleUrl + "|" + readableNameContainer.name,
             contentType: contentType,
             inflate: true,
             batch,

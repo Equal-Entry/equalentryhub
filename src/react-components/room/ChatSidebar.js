@@ -347,7 +347,7 @@ export function SystemMessage(props) {
     <li className={classNames(styles.messageGroup, styles.systemMessage)}>
       {props.showLineBreak && <hr />}
       <p className={styles.messageGroupLabel}>
-        <i  role="alert">{formatSystemMessage(props, intl)}</i>
+        <i role="alert">{formatSystemMessage(props, intl)}</i>
         <span>
           <FormattedRelativeTime updateIntervalInSeconds={10} value={(props.timestamp - Date.now()) / 1000} />
         </span>

@@ -212,7 +212,7 @@ export default class SceneEntryManager {
     const spawnMediaInfrontOfPlayer = (src, contentOrigin, optionalName) => {
       if (!this.hubChannel.can("spawn_and_move_media")) return;
       const { entity, orientation } = addMedia(
-        (!!optionalName) ? src + "|" + optionalName : src,
+        !!optionalName ? src + "|" + optionalName : src,
         "#interactable-media",
         contentOrigin,
         null,

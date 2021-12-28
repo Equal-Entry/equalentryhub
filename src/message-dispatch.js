@@ -10,7 +10,6 @@ import { LogMessageType } from "./react-components/room/ChatSidebar";
 import { getAvatarFromName } from "./utils/accessbility";
 import { SOUND_TELEPORT_END } from "./systems/sound-effects-system";
 
-
 let uiRoot;
 // Handles user-entered messages
 export default class MessageDispatch extends EventTarget {
@@ -198,42 +197,42 @@ export default class MessageDispatch extends EventTarget {
         break;
       case "move":
         {
-          var myself_el
-          var el
-          for (let p of window.APP.componentRegistry["player-info"]){
-            if (p.el.id == 'avatar-rig'){
+          var myself_el;
+          var el;
+          for (let p of window.APP.componentRegistry["player-info"]) {
+            if (p.el.id == "avatar-rig") {
               myself_el = getAvatarFromName(p.displayName);
-            } 
-            if(String(args).toLowerCase() == p.displayName.toLowerCase()){
+            }
+            if (String(args).toLowerCase() == p.displayName.toLowerCase()) {
               el = getAvatarFromName(p.displayName);
             }
           }
 
-          if (el == null){
-
+          if (el == null) {
             this.log(LogMessageType.moveFailed);
-
-          }else if(el.components["player-info"].displayName.trim() == myself_el.components["player-info"].displayName.trim()){
-
+          } else if (
+            el.components["player-info"].displayName.trim() == myself_el.components["player-info"].displayName.trim()
+          ) {
             this.log(LogMessageType.moveToMyself);
-
-          }
-          
-          else{
+          } else {
             var characterController = myself_el.sceneEl.systems["hubs-systems"].characterController;
 
             const targetMatrix = new THREE.Matrix4();
             targetMatrix.copy(el.object3D.matrix);
-            targetMatrix.multiply(new THREE.Matrix4().makeRotationY(myself_el.object3D.position.angleTo(el.object3D.position)).makeTranslation(0, 0, 1));
-            
+            targetMatrix.multiply(
+              new THREE.Matrix4()
+                .makeRotationY(myself_el.object3D.position.angleTo(el.object3D.position))
+                .makeTranslation(0, 0, 1)
+            );
+
             characterController.travelByWaypoint(targetMatrix, true, true);
-            
+
             var camera = document.querySelector("#avatar-pov-node").object3D;
             const targetHead = new THREE.Vector3();
             el.object3D.getWorldPosition(targetHead);
             targetHead.setComponent(1, targetHead.y + 1.6);
             camera.lookAt(targetHead);
-      
+
             characterController.enqueueInPlaceRotationAroundWorldUp(Math.PI);
             characterController.sfx.playSoundOneShot(SOUND_TELEPORT_END);
 
@@ -243,71 +242,65 @@ export default class MessageDispatch extends EventTarget {
         break;
       case "describe":
         {
-          if(!!args){
-
-            var fullName = ""
-            for (var arg of args){
-              fullName = fullName + ` ${arg}`
+          if (!!args) {
+            var fullName = "";
+            for (var arg of args) {
+              fullName = fullName + ` ${arg}`;
             }
-            fullName = fullName.trimStart()
+            fullName = fullName.trimStart();
 
             var info = "";
 
             const objects = this.scene.systems["listed-media"].els;
-            for (let o of objects){
-              if (o.object3D.name == fullName){
-
+            for (let o of objects) {
+              if (o.object3D.name == fullName) {
                 const descJson = JSON.parse(o.components["media-loader"].data.description);
                 for (let key in descJson) info = info + `${key} : ${descJson[key]}; `;
 
-                this.log(LogMessageType.objectInfo, {object: fullName, info: info});
+                this.log(LogMessageType.objectInfo, { object: fullName, info: info });
               }
             }
-
-          }else{
-            if (window.APP.hub.description == null){
+          } else {
+            if (window.APP.hub.description == null) {
               this.log(LogMessageType.noRoomInfo);
-            }else{
-              this.log(LogMessageType.roomInfo, {info: window.APP.hub.description});
+            } else {
+              this.log(LogMessageType.roomInfo, { info: window.APP.hub.description });
             }
           }
-
         }
         break;
       case "list":
         {
           var msg = "";
-          var index = 1
-          if (args == "avatars"){
-
-            for (let a of document.querySelectorAll("[networked-avatar]") ){
-              if (a.id !== 'avatar-rig'){
-                msg = msg + ` [ ${index} - ${document.querySelector("#"+a.id).components["player-info"].displayName.trim()}] `;
+          var index = 1;
+          if (args == "avatars") {
+            for (let a of document.querySelectorAll("[networked-avatar]")) {
+              if (a.id !== "avatar-rig") {
+                msg =
+                  msg +
+                  ` [ ${index} - ${document.querySelector("#" + a.id).components["player-info"].displayName.trim()}] `;
                 index++;
-              } 
+              }
             }
 
-            if(msg == ""){
-              this.log(LogMessageType.noAvatars); 
-            }else{ 
-              this.log(LogMessageType.listAvatars, {msg: msg}); 
+            if (msg == "") {
+              this.log(LogMessageType.noAvatars);
+            } else {
+              this.log(LogMessageType.listAvatars, { msg: msg });
             }
-
-          }else if (args == "objects"){
-
+          } else if (args == "objects") {
             const objects = this.scene.systems["listed-media"].els;
-            for (let o of objects){
+            for (let o of objects) {
               msg = msg + ` [ ${index} - ${o.components["media-loader"].data.mediaName}] `;
               index++;
             }
 
-            if(msg == ""){
-              this.log(LogMessageType.noObjects); 
-            }else{ 
-              this.log(LogMessageType.listObjects, {msg: msg});
+            if (msg == "") {
+              this.log(LogMessageType.noObjects);
+            } else {
+              this.log(LogMessageType.listObjects, { msg: msg });
             }
           }
-          
         }
         break;
     }

@@ -38,7 +38,7 @@ export const getDefaultResolveQuality = (is360 = false) => {
 };
 
 export const resolveUrl = async (url, quality = null, version = 1, bustCache, readableName) => {
-  if(url.includes("|")){
+  if (url.includes("|")) {
     const urlWithName = url.split("|");
     readableName.name = urlWithName[1];
     url = urlWithName[0];
@@ -189,7 +189,7 @@ export const addMedia = (
 
   var mediaName = "";
 
-  if (src.includes("|")){
+  if (src.includes("|")) {
     mediaName = src.split("|")[1];
   }
 

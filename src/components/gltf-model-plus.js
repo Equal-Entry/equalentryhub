@@ -742,8 +742,8 @@ AFRAME.registerComponent("gltf-model-plus", {
     }
     var src = resolveAsset(this.data.src);
     if (src) {
-      if(src.includes("|")) src = src.split("|")[0]
-      console.log("realeasing " + src)
+      if (src.includes("|")) src = src.split("|")[0];
+      console.log("realeasing " + src);
       gltfCache.release(src);
     }
   },
@@ -760,9 +760,9 @@ AFRAME.registerComponent("gltf-model-plus", {
     try {
       if (src === this.lastSrc) return;
 
-      var readableName  
-      if (src.includes("|")){
-        const srcWithName = src.split("|")
+      var readableName;
+      if (src.includes("|")) {
+        const srcWithName = src.split("|");
         src = srcWithName[0];
         readableName = srcWithName[1];
       }

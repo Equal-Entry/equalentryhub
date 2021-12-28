@@ -12,7 +12,7 @@ import { ReactComponent as VideoIcon } from "../icons/Video.svg";
 import { ReactComponent as AudioIcon } from "../icons/Audio.svg";
 import { ReactComponent as TextDocumentIcon } from "../icons/TextDocument.svg";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Button } from '../input/Button';
+import { Button } from "../input/Button";
 
 function getObjectIcon(type) {
   switch (type) {
@@ -30,10 +30,9 @@ function getObjectIcon(type) {
   }
 }
 
-function showDesc(e, targetObject, onSelectDesc){
-
-  e.stopPropagation()
-  onSelectDesc(targetObject)
+function showDesc(e, targetObject, onSelectDesc) {
+  e.stopPropagation();
+  onSelectDesc(targetObject);
 }
 
 const objectTypeNames = defineMessages({
@@ -65,7 +64,7 @@ export function ObjectsSidebarItem({ selected, object, onSelectDesc, ...rest }) 
       <ObjectTypeIcon />
       <p>{object.name}</p>
       <p className={styles.description}>
-        <Button preset="primary" sm onClick={e => showDesc(e, object, onSelectDesc)} style={{float: 'right'}}>
+        <Button preset="primary" sm onClick={e => showDesc(e, object, onSelectDesc)} style={{ float: "right" }}>
           <span>View Description</span>
         </Button>
       </p>
