@@ -187,11 +187,18 @@ export const addMedia = (
   // seen across any other entities. Otherwise, start with version 1.
   const version = getLatestMediaVersionOfSrc(src);
 
+  var mediaName = "";
+
+  if (src.includes("|")){
+    mediaName = src.split("|")[1];
+  }
+
   entity.setAttribute("media-loader", {
     fitToBox,
     resolve,
     animate,
     src: typeof src === "string" ? coerceToUrl(src) || src : "",
+    mediaName: mediaName,
     version,
     contentSubtype,
     fileIsOwned: !needsToBeUploaded,

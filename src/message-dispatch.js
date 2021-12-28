@@ -297,7 +297,7 @@ export default class MessageDispatch extends EventTarget {
 
             const objects = this.scene.systems["listed-media"].els;
             for (let o of objects){
-              msg = msg + ` [ ${index} - ${o.object3D.name}] `;
+              msg = msg + ` [ ${index} - ${o.components["media-loader"].data.mediaName}] `;
               index++;
             }
 

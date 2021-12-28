@@ -852,8 +852,6 @@ AFRAME.registerComponent("gltf-model-plus", {
 
       rewires.forEach(f => f());
 
-      if (!!readableName) object3DToSet.parent.name = readableName;
-
       object3DToSet.visible = true;
       this.el.emit("model-loaded", { format: "gltf", model: object3DToSet });
     } catch (e) {

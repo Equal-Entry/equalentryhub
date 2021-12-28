@@ -47,6 +47,7 @@ AFRAME.registerComponent("media-loader", {
     fileId: { type: "string" },
     fileIsOwned: { type: "boolean" },
     src: { type: "string" },
+    mediaName: { type: "string" },
     description: { type: "string" },
     version: { type: "number", default: 1 }, // Used to force a re-resolution
     fitToBox: { default: false },

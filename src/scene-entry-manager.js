@@ -226,7 +226,6 @@ export default class SceneEntryManager {
           orientation: or
         });
       });
-      entity.object3D.name = optionalName;
 
       return entity;
     };

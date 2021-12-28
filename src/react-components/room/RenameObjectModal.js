@@ -23,16 +23,17 @@ export function RenameObjectModal({ onCancel, targetObject, deselectObject }) {
             />
             <AcceptButton onClick={() => {
               
-              const targetEl = targetObject.el
-              const mediaLoaderData = targetEl.components["media-loader"].data
+              const targetEl = targetObject.el;
+              const mediaLoaderData = targetEl.components["media-loader"].data;
 
               mediaLoaderData.src = originalUrl + "|" + input;
-              targetEl.setAttribute("media-loader", mediaLoaderData) 
-              targetEl.components["media-loader"].refresh()
-              targetEl.components["media-loader"].update(mediaLoaderData, true);
+              mediaLoaderData.mediaName = input;
+              targetEl.setAttribute("media-loader", mediaLoaderData);
 
-              deselectObject()
-              onCancel()
+              targetEl.components["media-loader"].refresh();
+
+              deselectObject();
+              onCancel();
 
             }}/>
             <CancelButton onClick={onCancel} />
