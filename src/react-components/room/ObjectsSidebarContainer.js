@@ -33,16 +33,26 @@ export function ObjectsSidebarContainer({ onClose, hubChannel }) {
 
   if(!!selectedDescObj){
 
-    const desc = JSON.parse(selectedDescObj.el.components["media-loader"].data.description)
+    
     const descInfo = []
-
-    for (let key in desc){
+    
+    try{
+      const desc = JSON.parse(selectedDescObj.el.components["media-loader"].data.description)
+      for (let key in desc){
+        descInfo.push(
+        <InputField label={key}>
+              {desc[key]}
+        </InputField>
+        )
+      }
+    }catch(e){
       descInfo.push(
-      <InputField label={key}>
-            {desc[key]}
-      </InputField>
-      )
+        <InputField label={<FormattedMessage id="objects-sidebar.object-decs" defaultMessage="Object Description"/>}>
+            <FormattedMessage id="objects-sidebar.object-no-decs" defaultMessage="This object has no description yet."/>
+        </InputField>
+        )
     }
+
 
     return (
       <Sidebar
