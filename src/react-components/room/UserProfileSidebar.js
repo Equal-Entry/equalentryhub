@@ -1,12 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
 import { Sidebar } from "../sidebar/Sidebar";
 import { CloseButton } from "../input/CloseButton";
 import { BackButton } from "../input/BackButton";
-import { Button } from "../input/Button";
+import { Button, CancelButton } from "../input/Button";
 import { Column } from "../layout/Column";
 import styles from "./UserProfileSidebar.scss";
 import { FormattedMessage, useIntl } from "react-intl";
+import { getAvatarFromName } from "../../utils/accessbility";
+import { InputField } from "../input/InputField";
 
 export function UserProfileSidebar({
   className,
@@ -30,6 +32,28 @@ export function UserProfileSidebar({
   ...rest
 }) {
   const intl = useIntl();
+
+  const [showDesc, setshowDesc] = useState(false);
+  const desc = getAvatarFromName(displayName).components["player-info"].data.description
+
+  if (showDesc) return (
+    <Sidebar
+    title={identityName ? `${displayName} (${identityName})` : displayName}
+    beforeTitle={showBackButton ? <BackButton onClick={onBack} /> : <CloseButton onClick={onClose} />}
+    className={className}
+    {...rest}
+  >
+    <Column center padding>
+      <div className={styles.avatarPreviewContainer}>{avatarPreview || <div />}</div>
+
+      <InputField label={<FormattedMessage id="room-sidebar.avatar-desc" defaultMessage="Avatar Description" />}>
+        {!!desc ? desc : (<FormattedMessage id="room-sidebar.avatar-no-desc" defaultMessage="There is no description for this avatar." />)}
+      </InputField>
+      <CancelButton onClick={() => setshowDesc(false)} />
+
+    </Column>
+  </Sidebar>
+  )
 
   return (
     <Sidebar
@@ -97,6 +121,11 @@ export function UserProfileSidebar({
             <FormattedMessage id="user-profile-sidebar.kick-button" defaultMessage="Kick" />
           </Button>
         )}
+        <Button preset="primary" onClick={() => {
+          setshowDesc(true)
+        }}>
+            <FormattedMessage id="user-profile-sidebar.show-desc" defaultMessage="Description" />
+        </Button>
       </Column>
     </Sidebar>
   );

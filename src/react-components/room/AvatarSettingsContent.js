@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Button, AcceptButton } from "../input/Button";
+import { Button, AcceptButton, CancelButton } from "../input/Button";
 import styles from "./AvatarSettingsContent.scss";
 import { TextInputField } from "../input/TextInputField";
+import { TextAreaInputField } from "../input/TextAreaInputField";
 import { Column } from "../layout/Column";
 import { FormattedMessage } from "react-intl";
 
@@ -16,6 +17,33 @@ export function AvatarSettingsContent({
   onChangeAvatar,
   ...rest
 }) {
+  const [selectedDesc, setSelectedDesc] = useState(false);
+  const [descInput, setDescInput] = useState("");
+
+  if (selectedDesc) {
+    return (
+      <Column as="form" className={styles.content}>
+        <TextAreaInputField
+          label={
+            <FormattedMessage
+              id="avatar-settings-content.please-enter-description"
+              defaultMessage="Please Enter Description"
+            />
+          }
+          minRows={5}
+          onChange={e => setDescInput(e.target.value)}
+        />
+        <AcceptButton
+          preset="accept"
+          onClick={() => {
+            document.getElementById("avatar-rig").components["player-info"].data.description = descInput;
+            setSelectedDesc(false);
+          }}
+        />
+        <CancelButton onClick={() => setSelectedDesc(false)} />
+      </Column>
+    );
+  }
   return (
     <Column as="form" className={styles.content} {...rest}>
       <TextInputField
@@ -41,6 +69,9 @@ export function AvatarSettingsContent({
         </Button>
       </div>
       <AcceptButton preset="accept" type="submit" />
+      <Button type="button" preset="primary" onClick={() => setSelectedDesc(true)}>
+        <FormattedMessage id="avatar-settings-content.add-avatar-desc" defaultMessage="Add Description" />
+      </Button>
     </Column>
   );
 }

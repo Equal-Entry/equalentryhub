@@ -37,6 +37,7 @@ AFRAME.registerComponent("player-info", {
   schema: {
     avatarSrc: { type: "string" },
     avatarType: { type: "string", default: AVATAR_TYPES.SKINNABLE },
+    description: { type: "string" },
     muted: { default: false },
     isSharingAvatarCamera: { default: false }
   },
