@@ -244,20 +244,27 @@ export default class MessageDispatch extends EventTarget {
         {
           if (!!args) {
             var fullName = "";
-            for (var arg of args) {
-              fullName = fullName + ` ${arg}`;
-            }
+            for (var arg of args) fullName = fullName + ` ${arg}`;
             fullName = fullName.trimStart();
 
             var info = "";
 
-            const objects = this.scene.systems["listed-media"].els;
-            for (let o of objects) {
-              if (o.object3D.name == fullName) {
-                const descJson = JSON.parse(o.components["media-loader"].data.description);
-                for (let key in descJson) info = info + `${key} : ${descJson[key]}; `;
+            const avatarEl = getAvatarFromName(fullName);
 
-                this.log(LogMessageType.objectInfo, { object: fullName, info: info });
+            if (!!avatarEl) {
+              this.log(LogMessageType.avatarInfo, {
+                avatar: fullName,
+                info: avatarEl.components["player-info"].data.description
+              });
+            } else {
+              const objects = this.scene.systems["listed-media"].els;
+              for (let o of objects) {
+                if (o.object3D.name == fullName) {
+                  const descJson = JSON.parse(o.components["media-loader"].data.description);
+                  for (let key in descJson) info = info + `${key} : ${descJson[key]}; `;
+
+                  this.log(LogMessageType.objectInfo, { object: fullName, info: info });
+                }
               }
             }
           } else {

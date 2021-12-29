@@ -155,7 +155,8 @@ export const LogMessageType = {
   noAvatars: "noAvatars",
   listObjects: "listObjects",
   noObjects: "noObjects",
-  objectInfo: "objectInfo"
+  objectInfo: "objectInfo",
+  avatarInfo: "avatarInfo"
 };
 
 const logMessages = defineMessages({
@@ -283,6 +284,10 @@ const logMessages = defineMessages({
   [LogMessageType.objectInfo]: {
     id: "chat-sidebar.log-message.object-info",
     defaultMessage: "Description of media object {object}: {info}"
+  },
+  [LogMessageType.avatarInfo]: {
+    id: "chat-sidebar.log-message.avatar-info",
+    defaultMessage: "Description of avatar {avatar}: {info}"
   }
 });
 
