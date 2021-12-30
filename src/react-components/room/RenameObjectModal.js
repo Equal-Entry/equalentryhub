@@ -6,7 +6,7 @@ import { Column } from "../layout/Column";
 import { TextInputField } from "../input/TextInputField";
 import { getObjectUrl } from "./object-hooks";
 
-export function RenameObjectModal({ onCancel, targetObject, deselectObject }) {
+export function RenameObjectModal({ onCancel, targetObject, deselectObject, isPinned }) {
   const url = getObjectUrl(targetObject);
   const originalSrc = url.split("|");
   const originalUrl = originalSrc[0];
@@ -28,6 +28,8 @@ export function RenameObjectModal({ onCancel, targetObject, deselectObject }) {
             targetEl.setAttribute("media-loader", mediaLoaderData);
 
             targetEl.components["media-loader"].refresh();
+
+            if (isPinned) window.APP.pinningHelper.setPinned(targetEl, true);
 
             deselectObject();
             onCancel();

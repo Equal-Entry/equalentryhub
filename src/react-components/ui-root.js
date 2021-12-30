@@ -204,6 +204,7 @@ class UIRoot extends Component {
     showRename: false,
     renameTarget: null,
     deselectObject: null,
+    renameObjectIsPinned: false,
 
     showEditDesciption: false
   };
@@ -1398,6 +1399,7 @@ class UIRoot extends Component {
                         onCancel={() => this.setState({ showRename: false })}
                         targetObject={this.state.renameTarget}
                         deselectObject={this.state.deselectObject}
+                        isPinned={this.state.renameObjectIsPinned}
                       />
                     ) : null}
                     {this.state.showEditDesciption ? (
@@ -1418,10 +1420,11 @@ class UIRoot extends Component {
                           }
                         }}
                         onClickEditDesc
-                        onClickRename={(activeObject, deselectObject) => {
+                        onClickRename={(activeObject, deselectObject, isPinned) => {
                           this.setState({ showRename: true });
                           this.setState({ renameTarget: activeObject });
                           this.setState({ deselectObject: deselectObject });
+                          this.setState({ renameObjectIsPinned: isPinned });
                         }}
                         onClickEditDesc={activeObject => {
                           this.setState({ showEditDesciption: true });
