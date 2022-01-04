@@ -23,8 +23,10 @@ export function RenameObjectModal({ onCancel, targetObject, deselectObject, isPi
             const targetEl = targetObject.el;
             const mediaLoaderData = targetEl.components["media-loader"].data;
 
-            mediaLoaderData.src = originalUrl + "|" + input;
-            mediaLoaderData.mediaName = input;
+            const newName = input ? input : originalName;
+
+            mediaLoaderData.src = originalUrl + "|" + newName;
+            mediaLoaderData.mediaName = newName;
             targetEl.setAttribute("media-loader", mediaLoaderData);
 
             targetEl.components["media-loader"].refresh();
