@@ -7,9 +7,8 @@ import ducky from "./assets/models/DuckyMesh.glb";
 import { EventTarget } from "event-target-shim";
 import { ExitReason } from "./react-components/room/ExitedRoomScreen";
 import { LogMessageType } from "./react-components/room/ChatSidebar";
-import { getAvatarFromName } from "./utils/accessbility";
+import { getAvatarFromName, getObjectByName, findTargetMartix, lookAtTarget } from "./utils/accessbility";
 import { SOUND_TELEPORT_END } from "./systems/sound-effects-system";
-
 let uiRoot;
 // Handles user-entered messages
 export default class MessageDispatch extends EventTarget {
@@ -62,6 +61,12 @@ export default class MessageDispatch extends EventTarget {
       this.hubChannel.sendMessage(message);
     }
   };
+
+  formatArgs(args) {
+    var fullName = "";
+    for (var arg of args) fullName = fullName + ` ${arg}`;
+    return fullName.trimStart();
+  }
 
   dispatchCommand = async (command, ...args) => {
     const entered = this.scene.is("entered");
@@ -197,55 +202,72 @@ export default class MessageDispatch extends EventTarget {
         break;
       case "move":
         {
-          var myself_el;
-          var el;
           for (let p of window.APP.componentRegistry["player-info"]) {
             if (p.el.id == "avatar-rig") {
               myself_el = getAvatarFromName(p.displayName);
             }
-            if (String(args).toLowerCase() == p.displayName.toLowerCase()) {
-              el = getAvatarFromName(p.displayName);
+          }
+
+          if (args[0] == "a") {
+            args.shift();
+            const fullName = this.formatArgs(args);
+
+            var myself_el;
+            var el;
+            for (let p of window.APP.componentRegistry["player-info"]) {
+              if (fullName.toLowerCase() == p.displayName.toLowerCase()) {
+                el = getAvatarFromName(p.displayName);
+              }
+            }
+
+            if (el == null) {
+              this.log(LogMessageType.moveFailed);
+            } else if (
+              el.components["player-info"].displayName.trim() == myself_el.components["player-info"].displayName.trim()
+            ) {
+              this.log(LogMessageType.moveToMyself);
+            } else {
+              var characterController = myself_el.sceneEl.systems["hubs-systems"].characterController;
+
+              const targetMatrix = new THREE.Matrix4();
+              findTargetMartix(targetMatrix, el);
+
+              characterController.travelByWaypoint(targetMatrix, true, true);
+
+              var camera = document.querySelector("#avatar-pov-node").object3D;
+              lookAtTarget(camera, 1.6, el);
+            }
+          } else if (args[0] == "o") {
+            args.shift();
+            const fullName = this.formatArgs(args);
+
+            const targetObject = getObjectByName(this.scene, fullName);
+
+            if (targetObject == null) {
+              this.log(LogMessageType.moveFailed);
+            } else {
+              var characterController = myself_el.sceneEl.systems["hubs-systems"].characterController;
+
+              const targetMatrix = new THREE.Matrix4();
+              findTargetMartix(targetMatrix, targetObject);
+
+              characterController.travelByWaypoint(targetMatrix, true, true);
+
+              var camera = document.querySelector("#avatar-pov-node").object3D;
+              lookAtTarget(camera, 0, targetObject);
             }
           }
 
-          if (el == null) {
-            this.log(LogMessageType.moveFailed);
-          } else if (
-            el.components["player-info"].displayName.trim() == myself_el.components["player-info"].displayName.trim()
-          ) {
-            this.log(LogMessageType.moveToMyself);
-          } else {
-            var characterController = myself_el.sceneEl.systems["hubs-systems"].characterController;
+          characterController.enqueueInPlaceRotationAroundWorldUp(Math.PI);
+          characterController.sfx.playSoundOneShot(SOUND_TELEPORT_END);
 
-            const targetMatrix = new THREE.Matrix4();
-            targetMatrix.copy(el.object3D.matrix);
-            targetMatrix.multiply(
-              new THREE.Matrix4()
-                .makeRotationY(myself_el.object3D.position.angleTo(el.object3D.position))
-                .makeTranslation(0, 0, 1)
-            );
-
-            characterController.travelByWaypoint(targetMatrix, true, true);
-
-            var camera = document.querySelector("#avatar-pov-node").object3D;
-            const targetHead = new THREE.Vector3();
-            el.object3D.getWorldPosition(targetHead);
-            targetHead.setComponent(1, targetHead.y + 1.6);
-            camera.lookAt(targetHead);
-
-            characterController.enqueueInPlaceRotationAroundWorldUp(Math.PI);
-            characterController.sfx.playSoundOneShot(SOUND_TELEPORT_END);
-
-            this.log(LogMessageType.moveSucssful);
-          }
+          this.log(LogMessageType.moveSucssful);
         }
         break;
       case "describe":
         {
           if (args.length != 0) {
-            var fullName = "";
-            for (var arg of args) fullName = fullName + ` ${arg}`;
-            fullName = fullName.trimStart();
+            const fullName = this.formatArgs(args);
 
             var info = "";
 
@@ -257,18 +279,14 @@ export default class MessageDispatch extends EventTarget {
                 info: avatarEl.components["player-info"].data.description
               });
             } else {
-              const objects = this.scene.systems["listed-media"].els;
-              for (let o of objects) {
-                if (o.components["media-loader"].data.mediaName.toLowerCase() == fullName.toLowerCase()) {
-                  try {
-                    const descJson = JSON.parse(o.components["media-loader"].data.description);
-                    for (let key in descJson) info = info + `${key} : ${descJson[key]}; `;
-                  } catch (e) {
-                    info = "No Info";
-                  }
-                  this.log(LogMessageType.objectInfo, { object: fullName, info: info });
-                }
+              const targetObject = getObjectByName(this.scene, fullName);
+              try {
+                const descJson = JSON.parse(targetObject.components["media-loader"].data.description);
+                for (let key in descJson) info = info + `${key} : ${descJson[key]}; `;
+              } catch (e) {
+                info = "No such object or no info";
               }
+              this.log(LogMessageType.objectInfo, { object: fullName, info: info });
             }
           } else {
             if (window.APP.hub.description == null) {
@@ -311,6 +329,10 @@ export default class MessageDispatch extends EventTarget {
               this.log(LogMessageType.listObjects, { msg: msg });
             }
           }
+        }
+        break;
+      case "a11y":
+        {
         }
         break;
     }

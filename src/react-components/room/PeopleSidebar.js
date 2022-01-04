@@ -17,7 +17,7 @@ import { ReactComponent as PeopleIcon } from "../icons/People.svg";
 import { List, ButtonListItem } from "../layout/List";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SOUND_TELEPORT_END } from "../../systems/sound-effects-system";
-import { getAvatarFromName } from "../../utils/accessbility";
+import { getAvatarFromName, getObjectByName, findTargetMartix, lookAtTarget } from "../../utils/accessbility";
 
 function getDeviceLabel(ctx, intl) {
   if (ctx) {
@@ -112,20 +112,12 @@ function moveToActionbyButton(people, person, intl, e) {
       el.object3D.getWorldQuaternion(q);
 
       const targetMatrix = new THREE.Matrix4();
-      targetMatrix.copy(el.object3D.matrix);
-      targetMatrix.multiply(
-        new THREE.Matrix4()
-          .makeRotationY(myself_el.object3D.position.angleTo(el.object3D.position))
-          .makeTranslation(0, 0, 1)
-      );
+      findTargetMartix(targetMatrix, el);
 
       characterController.travelByWaypoint(targetMatrix, true, true);
 
       var camera = document.querySelector("#avatar-pov-node").object3D;
-      const targetHead = new THREE.Vector3();
-      el.object3D.getWorldPosition(targetHead);
-      targetHead.setComponent(1, targetHead.y + 1.6);
-      camera.lookAt(targetHead);
+      lookAtTarget(camera, 1.6, el);
 
       characterController.enqueueInPlaceRotationAroundWorldUp(Math.PI);
       characterController.sfx.playSoundOneShot(SOUND_TELEPORT_END);

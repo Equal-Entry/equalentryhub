@@ -247,11 +247,11 @@ const logMessages = defineMessages({
   },
   [LogMessageType.moveSucssful]: {
     id: "chat-sidebar.log-message.move-sucssful",
-    defaultMessage: "Your avatar move into the target avatar sucssfully."
+    defaultMessage: "Your avatar move into the target avatar or objects sucssfully."
   },
   [LogMessageType.moveFailed]: {
     id: "chat-sidebar.log-message.move-failed",
-    defaultMessage: "Move failed. There is no such avatar."
+    defaultMessage: "Move failed. There is no such avatar or object."
   },
   [LogMessageType.moveToMyself]: {
     id: "chat-sidebar.log-message.move-myself",
