@@ -21,6 +21,7 @@ export function AvatarSettingsContent({
   const [descInput, setDescInput] = useState("");
 
   if (selectedDesc) {
+    const orginDesc = document.getElementById("avatar-rig").components["player-info"].data.description;
     return (
       <Column as="form" className={styles.content}>
         <TextAreaInputField
@@ -30,13 +31,15 @@ export function AvatarSettingsContent({
               defaultMessage="Please Enter Description"
             />
           }
+          defaultValue={orginDesc}
           minRows={5}
           onChange={e => setDescInput(e.target.value)}
         />
         <AcceptButton
           preset="accept"
           onClick={() => {
-            document.getElementById("avatar-rig").components["player-info"].data.description = descInput;
+            const newDesc = descInput ? descInput : orginDesc;
+            document.getElementById("avatar-rig").components["player-info"].data.description = newDesc;
             setSelectedDesc(false);
           }}
         />
