@@ -242,7 +242,7 @@ export default class MessageDispatch extends EventTarget {
         break;
       case "describe":
         {
-          if (!!args) {
+          if (args.length != 0) {
             var fullName = "";
             for (var arg of args) fullName = fullName + ` ${arg}`;
             fullName = fullName.trimStart();
