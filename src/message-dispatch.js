@@ -259,10 +259,13 @@ export default class MessageDispatch extends EventTarget {
             } else {
               const objects = this.scene.systems["listed-media"].els;
               for (let o of objects) {
-                if (o.object3D.name == fullName) {
-                  const descJson = JSON.parse(o.components["media-loader"].data.description);
-                  for (let key in descJson) info = info + `${key} : ${descJson[key]}; `;
-
+                if (o.components["media-loader"].data.mediaName.toLowerCase() == fullName.toLowerCase()) {
+                  try {
+                    const descJson = JSON.parse(o.components["media-loader"].data.description);
+                    for (let key in descJson) info = info + `${key} : ${descJson[key]}; `;
+                  } catch (e) {
+                    info = "No Info";
+                  }
                   this.log(LogMessageType.objectInfo, { object: fullName, info: info });
                 }
               }
