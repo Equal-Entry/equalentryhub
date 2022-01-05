@@ -156,7 +156,8 @@ export const LogMessageType = {
   listObjects: "listObjects",
   noObjects: "noObjects",
   objectInfo: "objectInfo",
-  avatarInfo: "avatarInfo"
+  avatarInfo: "avatarInfo",
+  commandError: "commandError"
 };
 
 const logMessages = defineMessages({
@@ -288,6 +289,10 @@ const logMessages = defineMessages({
   [LogMessageType.avatarInfo]: {
     id: "chat-sidebar.log-message.avatar-info",
     defaultMessage: "Description of avatar {avatar}: {info}"
+  },
+  [LogMessageType.commandError]: {
+    id: "chat-sidebar.log-message.command-error",
+    defaultMessage: "A error occurs for this command, please try again."
   }
 });
 
@@ -304,6 +309,14 @@ export function formatSystemMessage(entry, intl) {
           id="chat-sidebar.system-message.leave"
           defaultMessage="{name} left."
           values={{ name: <b>{entry.name}</b> }}
+        />
+      );
+    case "avatar_info":
+      return (
+        <FormattedMessage
+          id="chat-sidebar.system-message.avatar-info"
+          defaultMessage="Description of avatar {avatar}: {info}"
+          values={{ avatar: <b>{entry.avatar}</b>, info: <b>{entry.info}</b> }}
         />
       );
     case "display_name_changed":

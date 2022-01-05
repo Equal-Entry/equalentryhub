@@ -11,6 +11,10 @@ import { getAvatarFromName, getObjectByName, findTargetMartix, lookAtTarget } fr
 import { SOUND_TELEPORT_END } from "./systems/sound-effects-system";
 let uiRoot;
 // Handles user-entered messages
+
+const avatarMap = new Map();
+const objectMap = new Map();
+
 export default class MessageDispatch extends EventTarget {
   constructor(scene, entryManager, hubChannel, remountUI, mediaSearchStore) {
     super();
@@ -239,9 +243,13 @@ export default class MessageDispatch extends EventTarget {
             }
           } else if (args[0] == "o") {
             args.shift();
-            const fullName = this.formatArgs(args);
-
-            const targetObject = getObjectByName(this.scene, fullName);
+            var targetObject;
+            if (!isNaN(args[0])) {
+              targetObject = this.scene.systems["listed-media"].els[parseInt(args[0]) - 1];
+            } else {
+              const fullName = this.formatArgs(args);
+              targetObject = getObjectByName(this.scene, fullName);
+            }
 
             if (targetObject == null) {
               this.log(LogMessageType.moveFailed);
@@ -267,24 +275,50 @@ export default class MessageDispatch extends EventTarget {
       case "describe":
         {
           if (args.length != 0) {
-            const fullName = this.formatArgs(args);
-
             var info = "";
 
-            const avatarEl = getAvatarFromName(fullName);
+            if (args[0] == "a") {
+              args.shift();
+              var fullName;
+              if (!isNaN(args[0])) {
+                fullName = avatarMap.get(args[0]);
+              } else {
+                fullName = this.formatArgs(args);
+              }
 
-            if (!!avatarEl) {
-              this.log(LogMessageType.avatarInfo, {
-                avatar: fullName,
-                info: avatarEl.components["player-info"].data.description
-              });
-            } else {
-              const targetObject = getObjectByName(this.scene, fullName);
+              try {
+                const avatarEl = getAvatarFromName(fullName);
+
+                if (!!avatarEl) {
+                  const info = avatarEl.components["player-info"].data.description;
+                  this.log(LogMessageType.avatarInfo, {
+                    avatar: fullName,
+                    info: info ? info : "This avatar has no description."
+                  });
+                } else {
+                  this.log(LogMessageType.avatarInfo, {
+                    avatar: fullName,
+                    info: "No such avatar or no info."
+                  });
+                }
+              } catch (e) {
+                this.log(LogMessageType.commandError);
+              }
+            } else if (args[0] == "o") {
+              args.shift();
+              var targetObject;
+              if (!isNaN(args[0])) {
+                targetObject = this.scene.systems["listed-media"].els[parseInt(args[0]) - 1];
+              } else {
+                const fullName = this.formatArgs(args);
+                targetObject = getObjectByName(this.scene, fullName);
+              }
+
               try {
                 const descJson = JSON.parse(targetObject.components["media-loader"].data.description);
                 for (let key in descJson) info = info + `${key} : ${descJson[key]}; `;
               } catch (e) {
-                info = "No such object or no info";
+                info = "No such object or no info.";
               }
               this.log(LogMessageType.objectInfo, { object: fullName, info: info });
             }
@@ -301,12 +335,12 @@ export default class MessageDispatch extends EventTarget {
         {
           var msg = "";
           var index = 1;
-          if (args == "avatars") {
+          if (args == "a") {
             for (let a of document.querySelectorAll("[networked-avatar]")) {
               if (a.id !== "avatar-rig") {
-                msg =
-                  msg +
-                  ` [ ${index} - ${document.querySelector("#" + a.id).components["player-info"].displayName.trim()}] `;
+                const name = document.querySelector("#" + a.id).components["player-info"].displayName.trim();
+                avatarMap.set(index.toString(), name);
+                msg = msg + ` [ ${index} - ${name}] `;
                 index++;
               }
             }
@@ -316,7 +350,7 @@ export default class MessageDispatch extends EventTarget {
             } else {
               this.log(LogMessageType.listAvatars, { msg: msg });
             }
-          } else if (args == "objects") {
+          } else if (args == "o") {
             const objects = this.scene.systems["listed-media"].els;
             for (let o of objects) {
               msg = msg + ` [ ${index} - ${o.components["media-loader"].data.mediaName}] `;
@@ -328,6 +362,8 @@ export default class MessageDispatch extends EventTarget {
             } else {
               this.log(LogMessageType.listObjects, { msg: msg });
             }
+          } else {
+            this.log(LogMessageType.commandError);
           }
         }
         break;
