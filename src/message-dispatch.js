@@ -278,6 +278,7 @@ export default class MessageDispatch extends EventTarget {
             var info = "";
 
             if (args[0] == "a") {
+              //handle avatar description
               args.shift();
               var fullName;
               if (!isNaN(args[0])) {
@@ -291,27 +292,32 @@ export default class MessageDispatch extends EventTarget {
 
                 if (!!avatarEl) {
                   const info = avatarEl.components["player-info"].data.description;
-                  this.log(LogMessageType.avatarInfo, {
+                  this.receive({
+                    type: "avatar_info",
                     avatar: fullName,
                     info: info ? info : "This avatar has no description."
                   });
                 } else {
-                  this.log(LogMessageType.avatarInfo, {
+                  this.receive({
+                    type: "avatar_info",
                     avatar: fullName,
-                    info: "No such avatar or no info."
+                    info: info ? info : "No such avatar."
                   });
                 }
               } catch (e) {
                 this.log(LogMessageType.commandError);
               }
             } else if (args[0] == "o") {
+              //handle object description
               args.shift();
               var targetObject;
+              var fullName;
               if (!isNaN(args[0])) {
                 targetObject = this.scene.systems["listed-media"].els[parseInt(args[0]) - 1];
+                fullName = targetObject.components["media-loader"].data.mediaName;
               } else {
-                const fullName = this.formatArgs(args);
                 targetObject = getObjectByName(this.scene, fullName);
+                fullName = this.formatArgs(args);
               }
 
               try {
@@ -320,9 +326,14 @@ export default class MessageDispatch extends EventTarget {
               } catch (e) {
                 info = "No such object or no info.";
               }
-              this.log(LogMessageType.objectInfo, { object: fullName, info: info });
+              this.receive({
+                type: "object_info",
+                object: fullName,
+                info: info
+              });
             }
           } else {
+            //no args stands for describe the room
             if (window.APP.hub.description == null) {
               this.log(LogMessageType.noRoomInfo);
             } else {
@@ -348,7 +359,10 @@ export default class MessageDispatch extends EventTarget {
             if (msg == "") {
               this.log(LogMessageType.noAvatars);
             } else {
-              this.log(LogMessageType.listAvatars, { msg: msg });
+              this.receive({
+                type: "list_avatars",
+                msg: msg
+              });
             }
           } else if (args == "o") {
             const objects = this.scene.systems["listed-media"].els;
@@ -360,7 +374,10 @@ export default class MessageDispatch extends EventTarget {
             if (msg == "") {
               this.log(LogMessageType.noObjects);
             } else {
-              this.log(LogMessageType.listObjects, { msg: msg });
+              this.receive({
+                type: "list_objects",
+                msg: msg
+              });
             }
           } else {
             this.log(LogMessageType.commandError);

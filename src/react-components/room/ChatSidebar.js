@@ -151,12 +151,8 @@ export const LogMessageType = {
   moveToMyself: "moveToMyself",
   roomInfo: "roomInfo",
   noRoomInfo: "noRoomInfo",
-  listAvatars: "listAvatars",
   noAvatars: "noAvatars",
-  listObjects: "listObjects",
   noObjects: "noObjects",
-  objectInfo: "objectInfo",
-  avatarInfo: "avatarInfo",
   commandError: "commandError"
 };
 
@@ -266,29 +262,13 @@ const logMessages = defineMessages({
     id: "chat-sidebar.log-message.no-room-info",
     defaultMessage: "Room description not defined."
   },
-  [LogMessageType.listAvatars]: {
-    id: "chat-sidebar.log-message.list-avatars",
-    defaultMessage: "This room has following avatars: {msg}"
-  },
   [LogMessageType.noAvatars]: {
     id: "chat-sidebar.log-message.no-avatars",
     defaultMessage: "There is no other avatar in the room."
   },
-  [LogMessageType.listObjects]: {
-    id: "chat-sidebar.log-message.list-objects",
-    defaultMessage: "This room has following objects: {msg}"
-  },
   [LogMessageType.noObjects]: {
     id: "chat-sidebar.log-message.no-objects",
     defaultMessage: "This no objects in the room."
-  },
-  [LogMessageType.objectInfo]: {
-    id: "chat-sidebar.log-message.object-info",
-    defaultMessage: "Description of media object {object}: {info}"
-  },
-  [LogMessageType.avatarInfo]: {
-    id: "chat-sidebar.log-message.avatar-info",
-    defaultMessage: "Description of avatar {avatar}: {info}"
   },
   [LogMessageType.commandError]: {
     id: "chat-sidebar.log-message.command-error",
@@ -311,12 +291,70 @@ export function formatSystemMessage(entry, intl) {
           values={{ name: <b>{entry.name}</b> }}
         />
       );
+    case "list_objects":
+      return (
+        <FormattedMessage
+          id="chat-sidebar.system-message.list-objects"
+          defaultMessage="This room has following objects: {msg}"
+          values={{
+            msg: (
+              <b>
+                <br />
+                {entry.msg}
+                <br />
+              </b>
+            )
+          }}
+        />
+      );
+    case "list_avatars":
+      return (
+        <FormattedMessage
+          id="chat-sidebar.system-message.list-avatars"
+          defaultMessage="This room has following avatars: {msg}"
+          values={{
+            msg: (
+              <b>
+                <br />
+                {entry.msg}
+                <br />
+              </b>
+            )
+          }}
+        />
+      );
+    case "object_info":
+      return (
+        <FormattedMessage
+          id="chat-sidebar.system-message.object-info"
+          defaultMessage="Description of media object {object}: {info}"
+          values={{
+            object: <b>{entry.object}</b>,
+            info: (
+              <b>
+                <br />
+                {entry.info}
+                <br />
+              </b>
+            )
+          }}
+        />
+      );
     case "avatar_info":
       return (
         <FormattedMessage
           id="chat-sidebar.system-message.avatar-info"
           defaultMessage="Description of avatar {avatar}: {info}"
-          values={{ avatar: <b>{entry.avatar}</b>, info: <b>{entry.info}</b> }}
+          values={{
+            avatar: <b>{entry.avatar}</b>,
+            info: (
+              <b>
+                <br />
+                {entry.info}
+                <br />
+              </b>
+            )
+          }}
         />
       );
     case "display_name_changed":

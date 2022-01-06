@@ -76,6 +76,9 @@ function updateMessageGroups(messageGroups, newMessage) {
     case "entered":
     case "leave":
     case "display_name_changed":
+    case "list_objects":
+    case "list_avatars":
+    case "object_info":
     case "avatar_info":
     case "scene_changed":
     case "hub_name_changed":
