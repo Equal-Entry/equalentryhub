@@ -1,3 +1,4 @@
+import React from "react";
 import { affixToWorldUp } from "./three-utils";
 
 export function getAvatarFromName(name) {
@@ -18,6 +19,15 @@ export function getObjectByName(scene, name) {
   return null;
 }
 
+export function getMyself() {
+  for (let p of window.APP.componentRegistry["player-info"]) {
+    if (p.el.id == "avatar-rig") {
+      return getAvatarFromName(p.displayName);
+    }
+  }
+  return null;
+}
+
 export function findTargetMartix(targetMatrix, el) {
   const translation = new THREE.Matrix4();
   targetMatrix.copy(el.object3D.matrix);
@@ -31,4 +41,29 @@ export function lookAtTarget(camera, offset, el) {
   el.object3D.getWorldPosition(targetHead);
   targetHead.setComponent(1, targetHead.y + offset);
   camera.lookAt(targetHead);
+}
+
+export function formatListMsg(msgArray) {
+  if (msgArray.length == 0) return "There is no object in this room";
+  let messageContainer = [];
+  msgArray.forEach((value, index) => {
+    messageContainer.push(
+      <b>
+        {value}
+        <br />
+      </b>
+    );
+  });
+  return messageContainer;
+}
+
+export function parseObjectDescription(object) {
+  const info = new Array();
+  try {
+    const descJson = JSON.parse(object.components["media-loader"].data.description);
+    for (let key in descJson) info.push(`${key} : ${descJson[key]}`);
+  } catch (e) {
+    info.push("No such object or no info.");
+  }
+  return info;
 }

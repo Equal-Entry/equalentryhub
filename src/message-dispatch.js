@@ -7,13 +7,21 @@ import ducky from "./assets/models/DuckyMesh.glb";
 import { EventTarget } from "event-target-shim";
 import { ExitReason } from "./react-components/room/ExitedRoomScreen";
 import { LogMessageType } from "./react-components/room/ChatSidebar";
-import { getAvatarFromName, getObjectByName, findTargetMartix, lookAtTarget } from "./utils/accessbility";
+import {
+  getAvatarFromName,
+  getObjectByName,
+  findTargetMartix,
+  lookAtTarget,
+  getMyself,
+  parseObjectDescription
+} from "./utils/accessbility";
 import { SOUND_TELEPORT_END } from "./systems/sound-effects-system";
 let uiRoot;
 // Handles user-entered messages
 
 const avatarMap = new Map();
-const objectMap = new Map();
+var resultNearbyMap = new Map();
+var closestObject;
 
 export default class MessageDispatch extends EventTarget {
   constructor(scene, entryManager, hubChannel, remountUI, mediaSearchStore) {
@@ -206,17 +214,12 @@ export default class MessageDispatch extends EventTarget {
         break;
       case "move":
         {
-          for (let p of window.APP.componentRegistry["player-info"]) {
-            if (p.el.id == "avatar-rig") {
-              myself_el = getAvatarFromName(p.displayName);
-            }
-          }
+          const myself_el = getMyself();
 
           if (args[0] == "a") {
             args.shift();
             const fullName = this.formatArgs(args);
 
-            var myself_el;
             var el;
             for (let p of window.APP.componentRegistry["player-info"]) {
               if (fullName.toLowerCase() == p.displayName.toLowerCase()) {
@@ -275,10 +278,9 @@ export default class MessageDispatch extends EventTarget {
       case "describe":
         {
           if (args.length != 0) {
-            var info = "";
-
             if (args[0] == "a") {
               //handle avatar description
+              var info = "";
               args.shift();
               var fullName;
               if (!isNaN(args[0])) {
@@ -319,18 +321,29 @@ export default class MessageDispatch extends EventTarget {
                 targetObject = getObjectByName(this.scene, fullName);
                 fullName = this.formatArgs(args);
               }
-
-              try {
-                const descJson = JSON.parse(targetObject.components["media-loader"].data.description);
-                for (let key in descJson) info = info + `${key} : ${descJson[key]}; `;
-              } catch (e) {
-                info = "No such object or no info.";
-              }
               this.receive({
                 type: "object_info",
                 object: fullName,
-                info: info
+                info: parseObjectDescription(targetObject)
               });
+            } else if (args[0] == "n") {
+              //handle describe nearby objects
+              if (!args[1]) {
+                //if there is no input i.e. /descirbe n
+                this.receive({
+                  type: "object_info",
+                  object: closestObject.components["media-loader"].data.mediaName,
+                  info: parseObjectDescription(closestObject)
+                });
+              } else {
+                //if there is input radius
+                const targetObject = Array.from(resultNearbyMap.values())[Number(args[1]) - 1];
+                this.receive({
+                  type: "object_info",
+                  object: targetObject.components["media-loader"].data.mediaName,
+                  info: parseObjectDescription(targetObject)
+                });
+              }
             }
           } else {
             //no args stands for describe the room
@@ -344,14 +357,15 @@ export default class MessageDispatch extends EventTarget {
         break;
       case "list":
         {
-          var msg = "";
+          var msg = new Array();
           var index = 1;
           if (args == "a") {
+            avatarMap.clear();
             for (let a of document.querySelectorAll("[networked-avatar]")) {
               if (a.id !== "avatar-rig") {
                 const name = document.querySelector("#" + a.id).components["player-info"].displayName.trim();
                 avatarMap.set(index.toString(), name);
-                msg = msg + ` [ ${index} - ${name}] `;
+                msg.push(`${index} - ${name}`);
                 index++;
               }
             }
@@ -366,8 +380,9 @@ export default class MessageDispatch extends EventTarget {
             }
           } else if (args == "o") {
             const objects = this.scene.systems["listed-media"].els;
+
             for (let o of objects) {
-              msg = msg + ` [ ${index} - ${o.components["media-loader"].data.mediaName}] `;
+              msg.push(`${index} - ${o.components["media-loader"].data.mediaName}`);
               index++;
             }
 
@@ -381,6 +396,66 @@ export default class MessageDispatch extends EventTarget {
             }
           } else {
             this.log(LogMessageType.commandError);
+          }
+        }
+        break;
+      case "nearby":
+        {
+          const myself = getMyself();
+          const myPosition = myself.object3D.position;
+
+          const objects = this.scene.systems["listed-media"].els;
+
+          if (!!args[0]) {
+            const radius = args[0];
+            resultNearbyMap.clear();
+
+            for (let object of objects) {
+              const currentDistance = object.object3D.position.distanceTo(myPosition);
+              if (currentDistance < radius) {
+                resultNearbyMap.set(Number.parseFloat(currentDistance).toFixed(2), object);
+              }
+            }
+            //sort the map with distance from close to far
+            var resultNearbyArray = Array.from(resultNearbyMap);
+            resultNearbyArray.sort(function(a, b) {
+              return a[0] - b[0];
+            });
+            resultNearbyMap = new Map(resultNearbyArray.map(i => [i[0], i[1]]));
+            closestObject = [...resultNearbyMap][0];
+
+            var result = new Array();
+            var index = 1;
+            resultNearbyMap.forEach((key, value) => {
+              result.push(`${index} - ${key.components["media-loader"].data.mediaName} - ${value}m away`);
+              index++;
+            });
+
+            this.receive({
+              type: "list_nearby_objects",
+              result: result
+            });
+          } else {
+            closestObject = null;
+            var closestObjectDistance = Number.MAX_VALUE;
+
+            for (let object of objects) {
+              const currentDistance = object.object3D.position.distanceTo(myPosition);
+              if (currentDistance < closestObjectDistance) {
+                closestObjectDistance = currentDistance;
+                closestObject = object;
+              }
+            }
+            var msg = "There is no object in this room";
+            if (!!closestObject) {
+              msg = `${closestObject.components["media-loader"].data.mediaName} - ${Number.parseFloat(
+                closestObjectDistance
+              ).toFixed(2)}m away`;
+            }
+            this.receive({
+              type: "closest_object",
+              msg: msg
+            });
           }
         }
         break;

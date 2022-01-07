@@ -15,6 +15,7 @@ import { Popover } from "../popover/Popover";
 import { EmojiPicker } from "./EmojiPicker";
 import styles from "./ChatSidebar.scss";
 import { formatMessageBody } from "../../utils/chat-message";
+import { formatListMsg } from "../../utils/accessbility";
 import { FormattedMessage, useIntl, defineMessages, FormattedRelativeTime } from "react-intl";
 
 export function SpawnMessageButton(props) {
@@ -291,7 +292,40 @@ export function formatSystemMessage(entry, intl) {
           values={{ name: <b>{entry.name}</b> }}
         />
       );
+    case "list_nearby_objects":
+      var messageContainer = formatListMsg(entry.result);
+      return (
+        <FormattedMessage
+          id="chat-sidebar.system-message.list-nearby-objects"
+          defaultMessage="Your nearby objects within this distance are: {msg}"
+          values={{
+            msg: (
+              <b>
+                <br />
+                {messageContainer}
+              </b>
+            )
+          }}
+        />
+      );
+    case "closest_object":
+      return (
+        <FormattedMessage
+          id="chat-sidebar.system-message.closest-object"
+          defaultMessage="The closest object to your avatar is: {msg}"
+          values={{
+            msg: (
+              <b>
+                <br />
+                {entry.msg}
+                <br />
+              </b>
+            )
+          }}
+        />
+      );
     case "list_objects":
+      var messageContainer = formatListMsg(entry.msg);
       return (
         <FormattedMessage
           id="chat-sidebar.system-message.list-objects"
@@ -300,14 +334,14 @@ export function formatSystemMessage(entry, intl) {
             msg: (
               <b>
                 <br />
-                {entry.msg}
-                <br />
+                {messageContainer}
               </b>
             )
           }}
         />
       );
     case "list_avatars":
+      var messageContainer = formatListMsg(entry.msg);
       return (
         <FormattedMessage
           id="chat-sidebar.system-message.list-avatars"
@@ -316,14 +350,14 @@ export function formatSystemMessage(entry, intl) {
             msg: (
               <b>
                 <br />
-                {entry.msg}
-                <br />
+                {messageContainer}
               </b>
             )
           }}
         />
       );
     case "object_info":
+      var messageContainer = formatListMsg(entry.info);
       return (
         <FormattedMessage
           id="chat-sidebar.system-message.object-info"
@@ -333,8 +367,7 @@ export function formatSystemMessage(entry, intl) {
             info: (
               <b>
                 <br />
-                {entry.info}
-                <br />
+                {messageContainer}
               </b>
             )
           }}
