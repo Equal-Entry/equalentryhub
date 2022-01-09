@@ -137,7 +137,7 @@ function ObjectMenuItems({
       {canRenameOrDescribe && (
         <ObjectMenuButton
           onClick={() => {
-            onClickEditDesc(activeObject);
+            onClickEditDesc(activeObject, isPinned);
           }}
         >
           <AddIcon />

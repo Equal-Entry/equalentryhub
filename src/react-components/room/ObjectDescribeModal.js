@@ -9,7 +9,7 @@ import { Row } from "../layout/Row";
 const MAIN_INFO = "Main Info";
 const GENERAL_INFO = "General Info";
 
-export function ObjectDescribeModal({ onCancel, targetObject }) {
+export function ObjectDescribeModal({ onCancel, targetObject, isPinned }) {
   const [genInput, setGenInput] = useState("");
   const [mainInput, setMainInput] = useState("");
 
@@ -43,6 +43,8 @@ export function ObjectDescribeModal({ onCancel, targetObject }) {
               newJson[GENERAL_INFO] = !!genInput ? genInput : oldJson[GENERAL_INFO];
 
               targetObject.el.components["media-loader"].data.description = JSON.stringify(newJson);
+
+              if (isPinned) window.APP.pinningHelper.setPinned(targetObject.el, true);
 
               onCancel();
             }}

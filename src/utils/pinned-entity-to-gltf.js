@@ -25,13 +25,20 @@ export default function pinnedEntityToGltf(el) {
     const mediaSrc = components["media-loader"].data.src;
     const mediaVersion = components["media-loader"].data.version;
     const mediaContentSubtype = components["media-loader"].data.contentSubtype;
+    const mediaDescription = components["media-loader"].data.description;
 
     if (mediaSrc.startsWith("hubs://") && mediaSrc.endsWith("/video")) {
       // Do not persist hubs client video urls
       return null;
     }
 
-    gltfComponents.media = { src: mediaSrc, version: mediaVersion, contentSubtype: mediaContentSubtype, id: networkId };
+    gltfComponents.media = {
+      src: mediaSrc,
+      version: mediaVersion,
+      contentSubtype: mediaContentSubtype,
+      id: networkId,
+      description: mediaDescription
+    };
 
     if (components["media-pdf"]) {
       gltfComponents.media.pageIndex = components["media-pdf"].data.index;

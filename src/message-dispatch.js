@@ -321,6 +321,7 @@ export default class MessageDispatch extends EventTarget {
                 targetObject = getObjectByName(this.scene, fullName);
                 fullName = this.formatArgs(args);
               }
+              console.log(targetObject.components);
               this.receive({
                 type: "object_info",
                 object: fullName,
