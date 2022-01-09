@@ -50,7 +50,14 @@ export function ObjectsSidebarContainer({ onClose, hubChannel }) {
     return (
       <Sidebar
         title={<FormattedMessage id="objects-sidebar.object-decs" defaultMessage="Object Description" />}
-        beforeTitle={<CloseButton onClick={() => setSelectedDescObj(null)} />}
+        beforeTitle={
+          <CloseButton
+            onClick={() => {
+              setSelectedDescObj(null);
+              unfocusObject();
+            }}
+          />
+        }
       >
         <Column padding>
           <InputField label={<FormattedMessage id="room-sidebar.object-name" defaultMessage="Name" />}>
