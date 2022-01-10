@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Sidebar } from "../sidebar/Sidebar";
 import { CloseButton } from "../input/CloseButton";
@@ -34,26 +34,33 @@ export function UserProfileSidebar({
   const intl = useIntl();
 
   const [showDesc, setshowDesc] = useState(false);
-  const desc = getAvatarFromName(displayName).components["player-info"].data.description
+  const desc = getAvatarFromName(displayName).components["player-info"].data.description;
 
-  if (showDesc) return (
-    <Sidebar
-    title={identityName ? `${displayName} (${identityName})` : displayName}
-    beforeTitle={showBackButton ? <BackButton onClick={onBack} /> : <CloseButton onClick={onClose} />}
-    className={className}
-    {...rest}
-  >
-    <Column center padding>
-      <div className={styles.avatarPreviewContainer}>{avatarPreview || <div />}</div>
+  if (showDesc)
+    return (
+      <Sidebar
+        title={identityName ? `${displayName} (${identityName})` : displayName}
+        beforeTitle={showBackButton ? <BackButton onClick={onBack} /> : <CloseButton onClick={onClose} />}
+        className={className}
+        {...rest}
+      >
+        <Column center padding>
+          <div className={styles.avatarPreviewContainer}>{avatarPreview || <div />}</div>
 
-      <InputField label={<FormattedMessage id="room-sidebar.avatar-desc" defaultMessage="Avatar Description" />}>
-        {!!desc ? desc : (<FormattedMessage id="room-sidebar.avatar-no-desc" defaultMessage="There is no description for this avatar." />)}
-      </InputField>
-      <CancelButton onClick={() => setshowDesc(false)} />
-
-    </Column>
-  </Sidebar>
-  )
+          <InputField label={<FormattedMessage id="room-sidebar.avatar-desc" defaultMessage="Avatar Description" />}>
+            {!!desc ? (
+              desc
+            ) : (
+              <FormattedMessage
+                id="room-sidebar.avatar-no-desc"
+                defaultMessage="There is no description for this avatar."
+              />
+            )}
+          </InputField>
+          <CancelButton onClick={() => setshowDesc(false)} />
+        </Column>
+      </Sidebar>
+    );
 
   return (
     <Sidebar
@@ -121,10 +128,13 @@ export function UserProfileSidebar({
             <FormattedMessage id="user-profile-sidebar.kick-button" defaultMessage="Kick" />
           </Button>
         )}
-        <Button preset="primary" onClick={() => {
-          setshowDesc(true)
-        }}>
-            <FormattedMessage id="user-profile-sidebar.show-desc" defaultMessage="Description" />
+        <Button
+          preset="primary"
+          onClick={() => {
+            setshowDesc(true);
+          }}
+        >
+          <FormattedMessage id="user-profile-sidebar.show-desc" defaultMessage="Description" />
         </Button>
       </Column>
     </Sidebar>

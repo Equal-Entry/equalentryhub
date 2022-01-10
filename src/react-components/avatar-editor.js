@@ -107,6 +107,7 @@ class AvatarEditor extends Component {
     if (this.props.avatarId) {
       const avatar = await fetchAvatar(this.props.avatarId);
       avatar.creatorAttribution = (avatar.attributions && avatar.attributions.creator) || "";
+      avatar.avatarDescription = avatar.description;
       Object.assign(this.inputFiles, avatar.files);
       this.setState({ avatar, previewGltfUrl: avatar.base_gltf_url });
     } else {
@@ -184,6 +185,7 @@ class AvatarEditor extends Component {
       attributions: {
         creator: this.state.avatar.creatorAttribution
       },
+      description: this.state.avatar.avatarDescription,
       files: fileUploads
         .map((resp, i) => [filesToUpload[i], resp && [resp.file_id, resp.meta.access_token, resp.meta.promotion_token]])
         .reduce((o, [k, v]) => ({ ...o, [k]: v }), {})
@@ -645,6 +647,30 @@ class AvatarEditor extends Component {
                 {/* {this.mapField("ao_map", "AO Map", "images/\*", true)} */}
                 {/* {this.mapField("metallic_map", "Metallic Map", "image/\*", true)} */}
                 {/* {this.mapField("roughness_map", "Roughness Map", "image/\*", true)} */}
+                <div className="text-field-container">
+                  <label htmlFor={`#avatar-avatarDescription`}>
+                    {intl.formatMessage({
+                      id: "avatar-editor.field.avatar-description",
+                      defaultMessage: "Description (optional)"
+                    })}
+                  </label>
+                  <textarea
+                    id={`avatar-avatarDescription`}
+                    rows={5}
+                    type="text"
+                    disabled={false}
+                    required={false}
+                    placeholder={intl.formatMessage({
+                      id: "avatar-editor.field.avatar-description",
+                      defaultMessage: "Description (optional)"
+                    })}
+                    className="text-field"
+                    value={this.state.avatar["avatarDescription"] || ""}
+                    onChange={e =>
+                      this.setState({ avatar: { ...this.state.avatar, ["avatarDescription"]: e.target.value } })
+                    }
+                  />
+                </div>
               </div>
               <AvatarPreview
                 className="preview"

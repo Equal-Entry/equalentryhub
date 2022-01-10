@@ -19,7 +19,7 @@ import {
   forceExitFrom2DInterstitial
 } from "./utils/vr-interstitial";
 import { ObjectContentOrigins } from "./object-types";
-import { getAvatarSrc, getAvatarType } from "./utils/avatar-utils";
+import { getAvatarSrc, getAvatarType, fetchAvatarDesc } from "./utils/avatar-utils";
 import { SOUND_ENTER_SCENE } from "./systems/sound-effects-system";
 
 const isIOS = detectIOS();
@@ -173,8 +173,13 @@ export default class SceneEntryManager {
 
     this._lastFetchedAvatarId = avatarId;
     const avatarSrc = await getAvatarSrc(avatarId);
+    const avatarDesc = await fetchAvatarDesc(avatarId);
 
-    this.avatarRig.setAttribute("player-info", { avatarSrc, avatarType: getAvatarType(avatarId) });
+    this.avatarRig.setAttribute("player-info", {
+      avatarSrc,
+      avatarType: getAvatarType(avatarId),
+      description: avatarDesc
+    });
   };
 
   _setupKicking = () => {

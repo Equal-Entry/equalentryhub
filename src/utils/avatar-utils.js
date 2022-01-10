@@ -30,7 +30,13 @@ export async function fetchAvatar(avatarId) {
   }
 }
 
+export async function fetchAvatarDesc(avatarId) {
+  const resp = await fetchReticulumAuthenticated(`/api/v1/avatars/${avatarId}`);
+  return resp.avatars[0].description;
+}
+
 async function fetchAvatarGltfUrl(avatarId) {
+  console.log(fetchAvatar(avatarId).then(avatar => avatar));
   return fetchAvatar(avatarId).then(avatar => avatar && avatar.gltf_url);
 }
 
