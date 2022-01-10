@@ -19,9 +19,18 @@ export function AvatarSettingsContent({
 }) {
   const [selectedDesc, setSelectedDesc] = useState(false);
   const [descInput, setDescInput] = useState("");
+  const orginDesc = document.getElementById("avatar-rig").components["player-info"].data.description;
+  var descButtonText;
+  console.log(orginDesc);
+  if (!orginDesc) {
+    descButtonText = <FormattedMessage id="avatar-settings-content.add-avatar-desc" defaultMessage="Add Description" />;
+  } else {
+    descButtonText = (
+      <FormattedMessage id="avatar-settings-content.edit-avatar-desc" defaultMessage="Edit Description" />
+    );
+  }
 
   if (selectedDesc) {
-    const orginDesc = document.getElementById("avatar-rig").components["player-info"].data.description;
     return (
       <Column as="form" className={styles.content}>
         <TextAreaInputField
@@ -73,7 +82,7 @@ export function AvatarSettingsContent({
       </div>
       <AcceptButton preset="accept" type="submit" />
       <Button type="button" preset="primary" onClick={() => setSelectedDesc(true)}>
-        <FormattedMessage id="avatar-settings-content.add-avatar-desc" defaultMessage="Add Description" />
+        {descButtonText}
       </Button>
     </Column>
   );
