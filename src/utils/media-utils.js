@@ -454,6 +454,9 @@ export async function createImageTexture(url, filter) {
     texture = new THREE.CanvasTexture(canvas);
   } else {
     try {
+      if (typeof url === "string" && url.includes("|")) {
+        url = url.split("|")[0];
+      }
       texture = await textureLoader.loadAsync(url);
     } catch (e) {
       throw new Error(`'${url}' could not be fetched (Error code: ${e.status}; Response: ${e.statusText})`);
