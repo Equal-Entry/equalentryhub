@@ -189,7 +189,7 @@ export const addMedia = (
 
   var mediaName = "";
 
-  if (src.includes("|")) {
+  if (typeof src === "string" && src.includes("|")) {
     mediaName = src.split("|")[1];
   }
 
