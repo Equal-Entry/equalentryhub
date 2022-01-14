@@ -76,6 +76,7 @@ function updateMessageGroups(messageGroups, newMessage) {
     case "entered":
     case "leave":
     case "display_name_changed":
+    case "list_objects_in_fov":
     case "list_nearby_objects":
     case "closest_object":
     case "list_objects":

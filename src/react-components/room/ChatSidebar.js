@@ -154,7 +154,9 @@ export const LogMessageType = {
   noRoomInfo: "noRoomInfo",
   noAvatars: "noAvatars",
   noObjects: "noObjects",
-  commandError: "commandError"
+  commandError: "commandError",
+  inFov: "inFov",
+  notInFov: "notInFov"
 };
 
 const logMessages = defineMessages({
@@ -274,6 +276,14 @@ const logMessages = defineMessages({
   [LogMessageType.commandError]: {
     id: "chat-sidebar.log-message.command-error",
     defaultMessage: "A error occurs for this command, please try again."
+  },
+  [LogMessageType.inFov]: {
+    id: "chat-sidebar.log-message.in-fov",
+    defaultMessage: "This object is in your avatar's field of view"
+  },
+  [LogMessageType.notInFov]: {
+    id: "chat-sidebar.log-message.not-in-fov",
+    defaultMessage: "This object is not in your avatar's field of view"
   }
 });
 
@@ -290,6 +300,22 @@ export function formatSystemMessage(entry, intl) {
           id="chat-sidebar.system-message.leave"
           defaultMessage="{name} left."
           values={{ name: <b>{entry.name}</b> }}
+        />
+      );
+    case "list_objects_in_fov":
+      var messageContainer = formatListMsg(entry.result);
+      return (
+        <FormattedMessage
+          id="chat-sidebar.system-message.list-objects-in-fov"
+          defaultMessage="The objects in your field of view are: {msg}"
+          values={{
+            msg: (
+              <b>
+                <br />
+                {messageContainer}
+              </b>
+            )
+          }}
         />
       );
     case "list_nearby_objects":

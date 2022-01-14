@@ -13,7 +13,8 @@ import {
   findTargetMartix,
   lookAtTarget,
   getMyself,
-  parseObjectDescription
+  parseObjectDescription,
+  setupCameraFrustum
 } from "./utils/accessbility";
 import { SOUND_TELEPORT_END } from "./systems/sound-effects-system";
 let uiRoot;
@@ -318,10 +319,9 @@ export default class MessageDispatch extends EventTarget {
                 targetObject = this.scene.systems["listed-media"].els[parseInt(args[0]) - 1];
                 fullName = targetObject.components["media-loader"].data.mediaName;
               } else {
-                targetObject = getObjectByName(this.scene, fullName);
                 fullName = this.formatArgs(args);
+                targetObject = getObjectByName(this.scene, fullName);
               }
-              console.log(targetObject.components);
               this.receive({
                 type: "object_info",
                 object: fullName,
@@ -402,9 +402,7 @@ export default class MessageDispatch extends EventTarget {
         break;
       case "nearby":
         {
-          const myself = getMyself();
-          const myPosition = myself.object3D.position;
-
+          const myPosition = getMyself().object3D.position;
           const objects = this.scene.systems["listed-media"].els;
 
           if (!!args[0]) {
@@ -458,6 +456,53 @@ export default class MessageDispatch extends EventTarget {
               msg: msg
             });
           }
+        }
+        break;
+      case "view":
+        {
+          const fullName = this.formatArgs(args);
+          const targetObject = getObjectByName(this.scene, fullName);
+
+          const frustum = setupCameraFrustum();
+          if (frustum.containsPoint(targetObject.object3D.position)) {
+            this.log(LogMessageType.inFov);
+          } else {
+            this.log(LogMessageType.notInFov);
+          }
+        }
+        break;
+      case "fov":
+        {
+          var radius = Number.MAX_SAFE_INTEGER;
+          if (!!args) radius = Number(args[0]);
+
+          const objects = this.scene.systems["listed-media"].els;
+          const frustum = setupCameraFrustum();
+          const myPosition = getMyself().object3D.position;
+
+          resultNearbyMap.clear();
+
+          for (let object of objects) {
+            const currentDistance = object.object3D.position.distanceTo(myPosition);
+            console.log(currentDistance < radius);
+            if (frustum.containsPoint(object.object3D.position) && currentDistance < radius) {
+              resultNearbyMap.set(Number.parseFloat(currentDistance).toFixed(2), object);
+            }
+          }
+          var resultNearbyArray = Array.from(resultNearbyMap);
+          resultNearbyMap = new Map(resultNearbyArray.map(i => [i[0], i[1]]));
+          closestObject = [...resultNearbyMap][0];
+
+          var result = new Array();
+          var index = 1;
+          resultNearbyMap.forEach((key, value) => {
+            result.push(`${index} - ${key.components["media-loader"].data.mediaName} - ${value}m away`);
+            index++;
+          });
+          this.receive({
+            type: "list_objects_in_fov",
+            result: result
+          });
         }
         break;
       case "a11y":

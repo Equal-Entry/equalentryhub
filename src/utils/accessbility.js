@@ -44,7 +44,7 @@ export function lookAtTarget(camera, offset, el) {
 }
 
 export function formatListMsg(msgArray) {
-  if (msgArray.length == 0) return "There is no object in this room";
+  if (msgArray.length == 0) return "There is no object in this room or no matching object";
   let messageContainer = [];
   msgArray.forEach((value, index) => {
     messageContainer.push(
@@ -66,4 +66,13 @@ export function parseObjectDescription(object) {
     info.push("No such object or no info.");
   }
   return info;
+}
+
+export function setupCameraFrustum() {
+  const camera = document.getElementById("viewing-camera").components.camera.camera;
+  var frustum = new THREE.Frustum();
+  frustum.setFromProjectionMatrix(
+    new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse)
+  );
+  return frustum;
 }
