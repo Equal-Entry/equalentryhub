@@ -157,7 +157,9 @@ export async function spawnChatMessage(body, from) {
   // If not a URL, spawn as a text bubble
 
   const [blob] = await renderChatMessage(body, from, true);
-  document.querySelector("a-scene").emit("add_media", new File([blob], "message.png", { type: "image/png" }));
+  document
+    .querySelector("a-scene")
+    .emit("add_media", new File([blob], "message.png" + "|" + body, { type: "image/png" }));
 }
 
 export default function ChatMessage(props) {

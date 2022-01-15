@@ -191,6 +191,8 @@ export const addMedia = (
 
   if (typeof src === "string" && src.includes("|")) {
     mediaName = src.split("|")[1];
+  } else if (typeof src === "object" && src.name.includes("|")) {
+    mediaName = `"${src.name.split("|")[1]}" Label`;
   }
 
   entity.setAttribute("media-loader", {
