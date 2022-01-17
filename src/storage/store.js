@@ -93,6 +93,7 @@ export const SCHEMA = {
       properties: {
         shouldPromptForRefresh: { type: "bool" },
         preferredMic: { type: "string" },
+        preferredSpeakers: { type: "string" },
         preferredCamera: { type: "string" },
         muteMicOnEntry: { type: "bool" },
         disableLeftRightPanning: { type: "bool" },
@@ -113,6 +114,7 @@ export const SCHEMA = {
         maxResolutionHeight: { type: "number" },
         globalVoiceVolume: { type: "number" },
         globalMediaVolume: { type: "number" },
+        globalSFXVolume: { type: "number" },
         snapRotationDegrees: { type: "number" },
         materialQualitySetting: { type: "string" },
         enableDynamicShadows: { type: "bool" },
@@ -131,7 +133,8 @@ export const SCHEMA = {
         showAudioDebugPanel: { type: "bool" },
         enableAudioClipping: { type: "bool" },
         audioClippingThreshold: { type: "number" },
-        theme: { type: "string" }
+        theme: { type: "string" },
+        avatarVoiceLevels: { type: "object" }
       }
     },
 
