@@ -21,7 +21,6 @@ export function AvatarSettingsContent({
   const [descInput, setDescInput] = useState("");
   const orginDesc = document.getElementById("avatar-rig").components["player-info"].data.description;
   var descButtonText;
-  console.log(orginDesc);
   if (!orginDesc) {
     descButtonText = <FormattedMessage id="avatar-settings-content.add-avatar-desc" defaultMessage="Add Description" />;
   } else {

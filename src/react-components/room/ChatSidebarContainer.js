@@ -75,6 +75,7 @@ function updateMessageGroups(messageGroups, newMessage) {
     case "join":
     case "entered":
     case "leave":
+    case "a11y":
     case "display_name_changed":
     case "list_objects_in_fov":
     case "list_nearby_objects":

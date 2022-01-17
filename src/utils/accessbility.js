@@ -1,5 +1,6 @@
 import React from "react";
 import { affixToWorldUp } from "./three-utils";
+import { FormattedMessage } from "react-intl";
 
 export function getAvatarFromName(name) {
   for (let a of document.querySelectorAll("[networked-avatar]")) {
@@ -41,6 +42,65 @@ export function lookAtTarget(camera, offset, el) {
   el.object3D.getWorldPosition(targetHead);
   targetHead.setComponent(1, targetHead.y + offset);
   camera.lookAt(targetHead);
+}
+
+export function a11yCommandListMsg() {
+  let messageContainer = [];
+  messageContainer.push(
+    <b>
+      <FormattedMessage
+        id="chat-sidebar.system-message.move-command-desc"
+        defaultMessage="/move - move to specific avatar or object"
+      />
+      <br />
+    </b>
+  );
+  messageContainer.push(
+    <b>
+      <FormattedMessage
+        id="chat-sidebar.system-message.describe-command-desc"
+        defaultMessage="/describe - describe media object, avatar or room information"
+      />
+      <br />
+    </b>
+  );
+  messageContainer.push(
+    <b>
+      <FormattedMessage
+        id="chat-sidebar.system-message.list-command-desc"
+        defaultMessage="/list - list media objects or avatars in this room"
+      />
+      <br />
+    </b>
+  );
+  messageContainer.push(
+    <b>
+      <FormattedMessage
+        id="chat-sidebar.system-message.nearby-command-desc"
+        defaultMessage="/nearby - list nearby media object from user avatar's current location"
+      />
+      <br />
+    </b>
+  );
+  messageContainer.push(
+    <b>
+      <FormattedMessage
+        id="chat-sidebar.system-message.pov-command-desc"
+        defaultMessage="/fov - list media objects in user avatar's current field of view"
+      />
+      <br />
+    </b>
+  );
+  messageContainer.push(
+    <b>
+      <FormattedMessage
+        id="chat-sidebar.system-message.view-command-desc"
+        defaultMessage="/view - check whether a given media object is in in user avatar's current field of view"
+      />
+      <br />
+    </b>
+  );
+  return messageContainer;
 }
 
 export function formatListMsg(msgArray) {

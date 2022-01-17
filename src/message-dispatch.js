@@ -507,6 +507,7 @@ export default class MessageDispatch extends EventTarget {
         break;
       case "a11y":
         {
+          this.receive({ type: "a11y" });
         }
         break;
     }

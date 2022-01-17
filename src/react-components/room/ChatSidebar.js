@@ -15,7 +15,7 @@ import { Popover } from "../popover/Popover";
 import { EmojiPicker } from "./EmojiPicker";
 import styles from "./ChatSidebar.scss";
 import { formatMessageBody } from "../../utils/chat-message";
-import { formatListMsg } from "../../utils/accessbility";
+import { formatListMsg, a11yCommandListMsg } from "../../utils/accessbility";
 import { FormattedMessage, useIntl, defineMessages, FormattedRelativeTime } from "react-intl";
 
 export function SpawnMessageButton(props) {
@@ -300,6 +300,22 @@ export function formatSystemMessage(entry, intl) {
           id="chat-sidebar.system-message.leave"
           defaultMessage="{name} left."
           values={{ name: <b>{entry.name}</b> }}
+        />
+      );
+    case "a11y":
+      var messageContainer = a11yCommandListMsg();
+      return (
+        <FormattedMessage
+          id="chat-sidebar.system-message.list-a11y-command"
+          defaultMessage="The addtional command for accessbility uses: {msg}"
+          values={{
+            msg: (
+              <b>
+                <br />
+                {messageContainer}
+              </b>
+            )
+          }}
         />
       );
     case "list_objects_in_fov":
