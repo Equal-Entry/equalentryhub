@@ -473,8 +473,8 @@ export default class MessageDispatch extends EventTarget {
         break;
       case "fov":
         {
-          var radius = Number.MAX_SAFE_INTEGER;
-          if (!!args) radius = Number(args[0]);
+          var radius = Number.MAX_VALUE;
+          if (!!args[0]) radius = Number(args[0]);
 
           const objects = this.scene.systems["listed-media"].els;
           const frustum = setupCameraFrustum();
@@ -484,7 +484,6 @@ export default class MessageDispatch extends EventTarget {
 
           for (let object of objects) {
             const currentDistance = object.object3D.position.distanceTo(myPosition);
-            console.log(currentDistance < radius);
             if (frustum.containsPoint(object.object3D.position) && currentDistance < radius) {
               resultNearbyMap.set(Number.parseFloat(currentDistance).toFixed(2), object);
             }
