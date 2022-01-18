@@ -189,10 +189,20 @@ export const addMedia = (
 
   var mediaName = "";
 
-  if (typeof src === "string" && src.includes("|")) {
-    mediaName = src.split("|")[1];
+  console.log(src);
+
+  if (typeof src === "string" && src.includes("tenor")) {
+    mediaName = "Tenor Image(No Name), GIF";
+  } else if (typeof src === "string" && src.includes("|")) {
+    if (src.includes("avatar")) {
+      mediaName = `${src.split("|")[1]}, Avatar Model`;
+    } else if (src.includes("scene")) {
+      mediaName = `${src.split("|")[1]}, Scene Preview`;
+    } else {
+      mediaName = `${src.split("|")[1]}, 3D Model`;
+    }
   } else if (typeof src === "object" && src.name.includes("|")) {
-    mediaName = `"${src.name.split("|")[1]}" Label`;
+    mediaName = `${src.name.split("|")[1]}, Label`;
   }
 
   entity.setAttribute("media-loader", {

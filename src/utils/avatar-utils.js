@@ -36,7 +36,6 @@ export async function fetchAvatarDesc(avatarId) {
 }
 
 async function fetchAvatarGltfUrl(avatarId) {
-  console.log(fetchAvatar(avatarId).then(avatar => avatar));
   return fetchAvatar(avatarId).then(avatar => avatar && avatar.gltf_url);
 }
 

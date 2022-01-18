@@ -434,6 +434,8 @@ export default class SceneEntryManager {
       const delaySpawn = isIn2DInterstitial() && !isMobileVR;
       await exit2DInterstitialAndEnterVR();
 
+      console.log(entry);
+
       // If user has HMD lifted up or gone through interstitial, delay spawning for now. eventually show a modal
       if (delaySpawn) {
         setTimeout(() => {
