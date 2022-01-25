@@ -7,6 +7,7 @@ import { ReactComponent as WandIcon } from "../icons/Wand.svg";
 import { ReactComponent as AttachIcon } from "../icons/Attach.svg";
 import { ReactComponent as ChatIcon } from "../icons/Chat.svg";
 import { ReactComponent as SendIcon } from "../icons/Send.svg";
+import { ReactComponent as SupportIcon } from "../icons/Support.svg";
 import { ReactComponent as ReactionIcon } from "../icons/Reaction.svg";
 import { IconButton } from "../input/IconButton";
 import { TextAreaInput } from "../input/TextAreaInput";
@@ -17,6 +18,14 @@ import styles from "./ChatSidebar.scss";
 import { formatMessageBody } from "../../utils/chat-message";
 import { formatListMsg, a11yCommandListMsg } from "../../utils/accessbility";
 import { FormattedMessage, useIntl, defineMessages, FormattedRelativeTime } from "react-intl";
+
+export function VoiceInputButton(props) {
+  return (
+    <IconButton className={styles.chatInputIcon} {...props}>
+      <SupportIcon />
+    </IconButton>
+  );
+}
 
 export function SpawnMessageButton(props) {
   return (
@@ -156,7 +165,10 @@ export const LogMessageType = {
   noObjects: "noObjects",
   commandError: "commandError",
   inFov: "inFov",
-  notInFov: "notInFov"
+  notInFov: "notInFov",
+  voiceActivated: "voiceActivate",
+  voiceAutoStopped: "voiceAutoStopped",
+  noVoiceRecognize: "noVoiceRecognize"
 };
 
 const logMessages = defineMessages({
@@ -279,11 +291,23 @@ const logMessages = defineMessages({
   },
   [LogMessageType.inFov]: {
     id: "chat-sidebar.log-message.in-fov",
-    defaultMessage: "This object is in your avatar's field of view"
+    defaultMessage: "This object is in your avatar's field of view."
   },
   [LogMessageType.notInFov]: {
     id: "chat-sidebar.log-message.not-in-fov",
-    defaultMessage: "This object is not in your avatar's field of view"
+    defaultMessage: "This object is not in your avatar's field of view."
+  },
+  [LogMessageType.voiceActivated]: {
+    id: "chat-sidebar.log-message.voice-activated",
+    defaultMessage: "Voice recognition activated! Please speak into the microphone."
+  },
+  [LogMessageType.voiceAutoStopped]: {
+    id: "chat-sidebar.log-message.voice-auto-stopped",
+    defaultMessage: "Recording automatically finished."
+  },
+  [LogMessageType.noVoiceRecognize]: {
+    id: "chat-sidebar.log-message.no-voice-recognize",
+    defaultMessage: "No speech detected, please try again."
   }
 });
 

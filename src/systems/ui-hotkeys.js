@@ -62,6 +62,10 @@ AFRAME.registerSystem("ui-hotkeys", {
     if (this.userinput.get(paths.actions.toggleUI)) {
       this.el.emit("action_toggle_ui");
     }
+
+    if (this.userinput.get(paths.actions.toggleVoiceInput)) {
+      this.el.emit("action_toggle_voice_input");
+    }
   },
 
   focusChat: function(prefix) {

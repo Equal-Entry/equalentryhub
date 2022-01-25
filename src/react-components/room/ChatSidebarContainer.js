@@ -10,6 +10,7 @@ import {
   SpawnMessageButton,
   ChatToolbarButton,
   SendMessageButton,
+  VoiceInputButton,
   EmojiPickerPopoverButton,
   ChatLengthWarning
 } from "./ChatSidebar";
@@ -18,6 +19,8 @@ import { spawnChatMessage } from "../chat-message";
 import { discordBridgesForPresences } from "../../utils/phoenix-utils";
 import { useIntl } from "react-intl";
 import { MAX_MESSAGE_LENGTH } from "../../utils/chat-message";
+import { LogMessageType } from "./ChatSidebar";
+import wordsToNumbers from "words-to-numbers";
 
 const ChatContext = createContext({ messageGroups: [], sendMessage: () => {} });
 
@@ -168,7 +171,14 @@ ChatContextProvider.propTypes = {
   messageDispatch: PropTypes.object
 };
 
-export function ChatSidebarContainer({ scene, canSpawnMessages, presences, occupantCount, onClose }) {
+export function ChatSidebarContainer({
+  scene,
+  canSpawnMessages,
+  presences,
+  occupantCount,
+  onClose,
+  onStartVoiceInput
+}) {
   const { messageGroups, sendMessage, setMessagesRead } = useContext(ChatContext);
   const [onScrollList, listRef, scrolledToBottom] = useMaintainScrollPosition(messageGroups);
   const [message, setMessage] = useState("");
@@ -264,6 +274,96 @@ export function ChatSidebarContainer({ scene, canSpawnMessages, presences, occup
 
   const isMobile = AFRAME.utils.device.isMobile();
   const isOverMaxLength = message.length > MAX_MESSAGE_LENGTH;
+
+  try {
+    var command = [
+      "command",
+      "slash",
+      "move",
+      "describe",
+      "list",
+      "nearby",
+      "avatar",
+      "object",
+      "fov",
+      "view",
+      "one",
+      "two",
+      "three",
+      "four",
+      "five"
+    ];
+    var grammar = "#JSGF V1.0; grammar command; public <command> = " + command.join(" | ") + " ;";
+
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+
+    var recognition = new SpeechRecognition();
+    var speechRecognitionList = new SpeechGrammarList();
+    speechRecognitionList.addFromString(grammar, 1);
+    recognition.grammars = speechRecognitionList;
+    recognition.continuous = false;
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+  } catch (e) {
+    console.error(e);
+  }
+
+  recognition.onstart = function() {
+    document.getElementById("avatar-rig").messageDispatch.log(LogMessageType.voiceActivated);
+  };
+
+  recognition.onspeechend = function() {
+    document.getElementById("avatar-rig").messageDispatch.log(LogMessageType.voiceAutoStopped);
+  };
+
+  recognition.onerror = function(event) {
+    if (event.error == "no-speech") {
+      document.getElementById("avatar-rig").messageDispatch.log(LogMessageType.noVoiceRecognize);
+    }
+  };
+
+  recognition.onresult = function(event) {
+    var current = event.resultIndex;
+
+    var transcript = event.results[current][0].transcript;
+
+    console.log(transcript);
+    if (transcript.startsWith("Slash ")) {
+      transcript = transcript.replace("Slash ", "/");
+    } else if (transcript.startsWith("flash ")) {
+      transcript = transcript.replace("flash ", "/");
+    } else if (transcript.startsWith("slash ")) {
+      transcript = transcript.replace("slash ", "/");
+    } else if (transcript.startsWith("command ")) {
+      transcript = transcript.replace("command ", "/");
+    } else if (transcript.startsWith("comment ")) {
+      transcript = transcript.replace("comment ", "/");
+    }
+    if (transcript.includes("Wan")) {
+      transcript = transcript.replace("Wan", "one");
+    }
+    transcript = wordsToNumbers(transcript);
+    if (transcript.includes("Avatar")) {
+      transcript = transcript.replace("Avatar", "a");
+    }
+    if (transcript.includes("object")) {
+      transcript = transcript.replace("object", "o");
+    }
+    if (transcript.includes("left")) {
+      transcript = transcript.replace("left", "list");
+    }
+
+    setMessage(transcript);
+  };
+
+  if (onStartVoiceInput) {
+    useEffect(() => {
+      recognition.start();
+    }, []);
+  }
+
   return (
     <ChatSidebar onClose={onClose}>
       <ChatMessageList ref={listRef} onScroll={onScrollList}>
@@ -302,6 +402,11 @@ export function ChatSidebarContainer({ scene, canSpawnMessages, presences, occup
             {canSpawnMessages && (
               <SpawnMessageButton disabled={message.length === 0 || isOverMaxLength} onClick={onSpawnMessage} />
             )}
+            <VoiceInputButton
+              onClick={() => {
+                recognition.start();
+              }}
+            />
           </>
         }
       />

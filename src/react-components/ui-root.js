@@ -206,7 +206,8 @@ class UIRoot extends Component {
     deselectObject: null,
     targetObjectIsPinned: false,
 
-    showEditDesciption: false
+    showEditDesciption: false,
+    startVoiceInput: false
   };
 
   constructor(props) {
@@ -333,6 +334,9 @@ class UIRoot extends Component {
     this.props.scene.addEventListener("devicechange", () => {
       this.forceUpdate();
     });
+    this.props.scene.addEventListener("action_toggle_voice_input", () =>
+      this.toggleSidebar("chat", { startVoiceInput: true })
+    );
 
     this.updateMediaPermissions();
 
@@ -1477,6 +1481,7 @@ class UIRoot extends Component {
                           canSpawnMessages={entered && this.props.hubChannel.can("spawn_and_move_media")}
                           scene={this.props.scene}
                           onClose={() => this.setSidebar(null)}
+                          onStartVoiceInput={this.state.startVoiceInput}
                         />
                       )}
                       {this.state.sidebarId === "objects" && (
