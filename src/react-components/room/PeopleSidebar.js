@@ -17,7 +17,7 @@ import { ReactComponent as PeopleIcon } from "../icons/People.svg";
 import { List, ButtonListItem } from "../layout/List";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SOUND_TELEPORT_END } from "../../systems/sound-effects-system";
-import { getAvatarFromName, getObjectByName, findTargetMartix, lookAtTarget } from "../../utils/accessbility";
+import { getAvatarFromName, goToGivenObject } from "../../utils/accessbility";
 
 function getDeviceLabel(ctx, intl) {
   if (ctx) {
@@ -108,18 +108,10 @@ function moveToActionbyButton(people, person, intl, e) {
   for (let a of document.querySelectorAll("[networked-avatar]")) {
     var el = document.querySelector("#" + a.id);
     if (target_name.trim() == el.components["player-info"].displayName.trim()) {
-      const q = new THREE.Quaternion();
-      el.object3D.getWorldQuaternion(q);
+      const scene = el.parentNode;
 
-      const targetMatrix = new THREE.Matrix4();
-      findTargetMartix(targetMatrix, el);
+      goToGivenObject(scene, el, characterController, 0.5);
 
-      characterController.travelByWaypoint(targetMatrix, true, true);
-
-      var camera = document.querySelector("#avatar-pov-node").object3D;
-      lookAtTarget(camera, 1.6, el);
-
-      characterController.enqueueInPlaceRotationAroundWorldUp(Math.PI);
       characterController.sfx.playSoundOneShot(SOUND_TELEPORT_END);
     }
   }

@@ -1,6 +1,7 @@
 import React from "react";
-import { affixToWorldUp } from "./three-utils";
+import { affixToWorldUp, rotateInPlaceAroundWorldUp } from "./three-utils";
 import { FormattedMessage } from "react-intl";
+import { SOUND_TELEPORT_END } from "./../systems/sound-effects-system";
 
 export function getAvatarFromName(name) {
   for (let a of document.querySelectorAll("[networked-avatar]")) {
@@ -29,19 +30,30 @@ export function getMyself() {
   return null;
 }
 
-export function findTargetMartix(targetMatrix, el) {
-  const translation = new THREE.Matrix4();
-  targetMatrix.copy(el.object3D.matrix);
-  affixToWorldUp(targetMatrix, targetMatrix);
-  translation.makeTranslation(0, -1.6, 0.5);
-  targetMatrix.multiply(translation);
-}
+export function goToGivenObject(scene, targetObject, characterController, offset) {
+  const cameraSystem = scene.systems["hubs-systems"].cameraSystem;
 
-export function lookAtTarget(camera, offset, el) {
-  const targetHead = new THREE.Vector3();
-  el.object3D.getWorldPosition(targetHead);
-  targetHead.setComponent(1, targetHead.y + offset);
-  camera.lookAt(targetHead);
+  cameraSystem.inspect(targetObject, offset, false);
+
+  const viewingCamera = document.getElementById("viewing-camera");
+  const targetMatrix = new THREE.Matrix4();
+  const translation = new THREE.Matrix4();
+  viewingCamera.object3DMap.camera.updateMatrices();
+  targetMatrix.copy(viewingCamera.object3DMap.camera.matrixWorld);
+  affixToWorldUp(targetMatrix, targetMatrix);
+  translation.makeTranslation(0, -1.6, 0.15);
+  targetMatrix.multiply(translation);
+  rotateInPlaceAroundWorldUp(targetMatrix, Math.PI, targetMatrix);
+
+  characterController.enqueueWaypointTravelTo(targetMatrix, true, {
+    willDisableMotion: false,
+    willDisableTeleporting: false,
+    snapToNavMesh: false,
+    willMaintainInitialOrientation: false
+  });
+
+  cameraSystem.uninspect();
+  characterController.sfx.playSoundOneShot(SOUND_TELEPORT_END);
 }
 
 export function a11yCommandListMsg() {

@@ -10,13 +10,11 @@ import { LogMessageType } from "./react-components/room/ChatSidebar";
 import {
   getAvatarFromName,
   getObjectByName,
-  findTargetMartix,
-  lookAtTarget,
+  goToGivenObject,
   getMyself,
   parseObjectDescription,
   setupCameraFrustum
 } from "./utils/accessbility";
-import { SOUND_TELEPORT_END } from "./systems/sound-effects-system";
 let uiRoot;
 // Handles user-entered messages
 
@@ -216,34 +214,38 @@ export default class MessageDispatch extends EventTarget {
       case "move":
         {
           const myself_el = getMyself();
+          const characterController = myself_el.sceneEl.systems["hubs-systems"].characterController;
 
           if (args[0] == "a") {
             args.shift();
-            const fullName = this.formatArgs(args);
-
-            var el;
-            for (let p of window.APP.componentRegistry["player-info"]) {
-              if (fullName.toLowerCase() == p.displayName.toLowerCase()) {
-                el = getAvatarFromName(p.displayName);
-              }
+            var fullName;
+            if (!isNaN(args[0])) {
+              fullName = avatarMap.get(args[0]);
+            } else {
+              fullName = this.formatArgs(args);
             }
 
-            if (el == null) {
-              this.log(LogMessageType.moveFailed);
-            } else if (
-              el.components["player-info"].displayName.trim() == myself_el.components["player-info"].displayName.trim()
-            ) {
-              this.log(LogMessageType.moveToMyself);
-            } else {
-              var characterController = myself_el.sceneEl.systems["hubs-systems"].characterController;
+            var el;
+            try {
+              for (let p of window.APP.componentRegistry["player-info"]) {
+                if (fullName.toLowerCase() == p.displayName.toLowerCase()) {
+                  el = getAvatarFromName(p.displayName);
+                }
+              }
 
-              const targetMatrix = new THREE.Matrix4();
-              findTargetMartix(targetMatrix, el);
-
-              characterController.travelByWaypoint(targetMatrix, true, true);
-
-              var camera = document.querySelector("#avatar-pov-node").object3D;
-              lookAtTarget(camera, 1.6, el);
+              if (el == null) {
+                this.log(LogMessageType.moveFailed);
+              } else if (
+                el.components["player-info"].displayName.trim() ==
+                myself_el.components["player-info"].displayName.trim()
+              ) {
+                this.log(LogMessageType.moveToMyself);
+              } else {
+                goToGivenObject(this.scene, el, characterController, 0.5);
+                this.log(LogMessageType.moveSucssful);
+              }
+            } catch (e) {
+              this.log(LogMessageType.commandError);
             }
           } else if (args[0] == "o") {
             args.shift();
@@ -258,22 +260,10 @@ export default class MessageDispatch extends EventTarget {
             if (targetObject == null) {
               this.log(LogMessageType.moveFailed);
             } else {
-              var characterController = myself_el.sceneEl.systems["hubs-systems"].characterController;
-
-              const targetMatrix = new THREE.Matrix4();
-              findTargetMartix(targetMatrix, targetObject);
-
-              characterController.travelByWaypoint(targetMatrix, true, true);
-
-              var camera = document.querySelector("#avatar-pov-node").object3D;
-              lookAtTarget(camera, 0, targetObject);
+              goToGivenObject(this.scene, targetObject, characterController, 1.5);
+              this.log(LogMessageType.moveSucssful);
             }
           }
-
-          characterController.enqueueInPlaceRotationAroundWorldUp(Math.PI);
-          characterController.sfx.playSoundOneShot(SOUND_TELEPORT_END);
-
-          this.log(LogMessageType.moveSucssful);
         }
         break;
       case "describe":

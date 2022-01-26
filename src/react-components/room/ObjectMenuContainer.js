@@ -99,7 +99,6 @@ function ObjectMenuItems({
       <ObjectMenuButton
         disabled={!canGoTo}
         onClick={() => {
-          console.log(activeObject.el.components["media-loader"]);
           goToSelectedObject();
           deselectObject();
           onGoToObject();
