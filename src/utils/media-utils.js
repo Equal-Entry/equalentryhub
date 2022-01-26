@@ -189,8 +189,6 @@ export const addMedia = (
 
   var mediaName = "";
 
-  console.log(src);
-
   if (typeof src === "string" && src.includes("tenor")) {
     mediaName = "Tenor Image(No Name), GIF";
   } else if (typeof src === "string" && src.includes("|")) {
@@ -203,6 +201,13 @@ export const addMedia = (
     }
   } else if (typeof src === "object" && src.name.includes("|")) {
     mediaName = `${src.name.split("|")[1]}, Label`;
+  } else if (typeof src === "string" && src.includes("3d-models/")) {
+    const nameString = src.split("3d-models/")[1].split("-");
+    nameString.pop();
+    const capitalized = nameString.map(name => {
+      return name[0].toUpperCase() + name.slice(1);
+    });
+    mediaName = `${capitalized.join(" ")}, 3D Model`;
   }
 
   entity.setAttribute("media-loader", {
