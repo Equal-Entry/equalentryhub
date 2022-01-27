@@ -216,132 +216,158 @@ export default class MessageDispatch extends EventTarget {
           const myself_el = getMyself();
           const characterController = myself_el.sceneEl.systems["hubs-systems"].characterController;
 
-          if (args[0] == "a") {
-            args.shift();
-            var fullName;
-            if (!isNaN(args[0])) {
-              fullName = avatarMap.get(args[0]);
-            } else {
-              fullName = this.formatArgs(args);
-            }
+          switch (args[0]) {
+            case "a":
+              {
+                args.shift();
+                var fullName;
+                if (!isNaN(args[0])) {
+                  fullName = avatarMap.get(args[0]);
+                } else {
+                  fullName = this.formatArgs(args);
+                }
 
-            var el;
-            try {
-              for (let p of window.APP.componentRegistry["player-info"]) {
-                if (fullName.toLowerCase() == p.displayName.toLowerCase()) {
-                  el = getAvatarFromName(p.displayName);
+                var el;
+                try {
+                  for (let p of window.APP.componentRegistry["player-info"]) {
+                    if (fullName.toLowerCase() == p.displayName.toLowerCase()) {
+                      el = getAvatarFromName(p.displayName);
+                    }
+                  }
+
+                  if (el == null) {
+                    this.log(LogMessageType.moveFailed);
+                  } else if (
+                    el.components["player-info"].displayName.trim() ==
+                    myself_el.components["player-info"].displayName.trim()
+                  ) {
+                    this.log(LogMessageType.moveToMyself);
+                  } else {
+                    goToGivenObject(this.scene, el, characterController, 0.5);
+                    this.log(LogMessageType.moveSucssful);
+                  }
+                } catch (e) {
+                  this.log(LogMessageType.commandError);
                 }
               }
+              break;
+            case "o":
+            case "f":
+            case "n":
+              {
+                const flag = args.shift();
+                var targetObject;
+                if (!isNaN(args[0])) {
+                  targetObject =
+                    args[0] == "o" || "f"
+                      ? this.scene.systems["listed-media"].els[parseInt(args[0]) - 1]
+                      : Array.from(resultNearbyMap.values())[Number(args[0]) - 1];
+                } else if (flag == "n" && !args[0]) {
+                  targetObject = closestObject;
+                } else {
+                  const fullName = this.formatArgs(args);
+                  targetObject = getObjectByName(this.scene, fullName);
+                }
 
-              if (el == null) {
-                this.log(LogMessageType.moveFailed);
-              } else if (
-                el.components["player-info"].displayName.trim() ==
-                myself_el.components["player-info"].displayName.trim()
-              ) {
-                this.log(LogMessageType.moveToMyself);
-              } else {
-                goToGivenObject(this.scene, el, characterController, 0.5);
-                this.log(LogMessageType.moveSucssful);
+                if (targetObject == null) {
+                  this.log(LogMessageType.moveFailed);
+                } else {
+                  goToGivenObject(this.scene, targetObject, characterController, 1.5);
+                  this.log(LogMessageType.moveSucssful);
+                }
               }
-            } catch (e) {
-              this.log(LogMessageType.commandError);
-            }
-          } else if (args[0] == "o") {
-            args.shift();
-            var targetObject;
-            if (!isNaN(args[0])) {
-              targetObject = this.scene.systems["listed-media"].els[parseInt(args[0]) - 1];
-            } else {
-              const fullName = this.formatArgs(args);
-              targetObject = getObjectByName(this.scene, fullName);
-            }
-
-            if (targetObject == null) {
-              this.log(LogMessageType.moveFailed);
-            } else {
-              goToGivenObject(this.scene, targetObject, characterController, 1.5);
-              this.log(LogMessageType.moveSucssful);
-            }
+              break;
           }
         }
         break;
       case "describe":
         {
-          if (args.length != 0) {
-            if (args[0] == "a") {
-              //handle avatar description
-              var info = "";
-              args.shift();
-              var fullName;
-              if (!isNaN(args[0])) {
-                fullName = avatarMap.get(args[0]);
-              } else {
-                fullName = this.formatArgs(args);
-              }
-
-              try {
-                const avatarEl = getAvatarFromName(fullName);
-
-                if (!!avatarEl) {
-                  const info = avatarEl.components["player-info"].data.description;
-                  this.receive({
-                    type: "avatar_info",
-                    avatar: fullName,
-                    info: info ? info : "This avatar has no description."
-                  });
+          switch (args[0]) {
+            case "a":
+              {
+                //handle avatar description
+                var info = "";
+                args.shift();
+                var fullName;
+                if (!isNaN(args[0])) {
+                  fullName = avatarMap.get(args[0]);
                 } else {
-                  this.receive({
-                    type: "avatar_info",
-                    avatar: fullName,
-                    info: info ? info : "No such avatar."
-                  });
+                  fullName = this.formatArgs(args);
                 }
-              } catch (e) {
-                this.log(LogMessageType.commandError);
+
+                try {
+                  const avatarEl = getAvatarFromName(fullName);
+
+                  if (!!avatarEl) {
+                    const info = avatarEl.components["player-info"].data.description;
+                    this.receive({
+                      type: "avatar_info",
+                      avatar: fullName,
+                      info: info ? info : "This avatar has no description."
+                    });
+                  } else {
+                    this.receive({
+                      type: "avatar_info",
+                      avatar: fullName,
+                      info: info ? info : "No such avatar."
+                    });
+                  }
+                } catch (e) {
+                  this.log(LogMessageType.commandError);
+                }
               }
-            } else if (args[0] == "o") {
-              //handle object description
-              args.shift();
-              var targetObject;
-              var fullName;
-              if (!isNaN(args[0])) {
-                targetObject = this.scene.systems["listed-media"].els[parseInt(args[0]) - 1];
-                fullName = targetObject.components["media-loader"].data.mediaName;
-              } else {
-                fullName = this.formatArgs(args);
-                targetObject = getObjectByName(this.scene, fullName);
-              }
-              this.receive({
-                type: "object_info",
-                object: fullName,
-                info: parseObjectDescription(targetObject)
-              });
-            } else if (args[0] == "n") {
-              //handle describe nearby objects
-              if (!args[1]) {
-                //if there is no input i.e. /descirbe n
+              break;
+            case "o":
+              {
+                //handle object description
+                args.shift();
+                var targetObject;
+                var fullName;
+                if (!isNaN(args[0])) {
+                  targetObject = this.scene.systems["listed-media"].els[parseInt(args[0]) - 1];
+                  if (!!targetObject) {
+                    fullName = targetObject.components["media-loader"].data.mediaName;
+                  }
+                } else {
+                  fullName = this.formatArgs(args);
+                  targetObject = getObjectByName(this.scene, fullName);
+                }
                 this.receive({
                   type: "object_info",
-                  object: closestObject.components["media-loader"].data.mediaName,
-                  info: parseObjectDescription(closestObject)
-                });
-              } else {
-                //if there is input radius
-                const targetObject = Array.from(resultNearbyMap.values())[Number(args[1]) - 1];
-                this.receive({
-                  type: "object_info",
-                  object: targetObject.components["media-loader"].data.mediaName,
+                  object: fullName,
                   info: parseObjectDescription(targetObject)
                 });
               }
-            }
-          } else {
-            //no args stands for describe the room
-            if (window.APP.hub.description == null) {
-              this.log(LogMessageType.noRoomInfo);
-            } else {
-              this.log(LogMessageType.roomInfo, { info: window.APP.hub.description });
+              break;
+            case "n":
+            case "f":
+              {
+                //handle describe nearby objects
+                if (!args[1]) {
+                  //if there is no input i.e. /descirbe n
+                  this.receive({
+                    type: "object_info",
+                    object: closestObject.components["media-loader"].data.mediaName,
+                    info: parseObjectDescription(closestObject)
+                  });
+                } else {
+                  //if there is input radius
+                  const targetObject = Array.from(resultNearbyMap.values())[Number(args[1]) - 1];
+                  this.receive({
+                    type: "object_info",
+                    object: targetObject.components["media-loader"].data.mediaName,
+                    info: parseObjectDescription(targetObject)
+                  });
+                }
+              }
+              break;
+            default: {
+              //no args stands for describe the room
+              if (window.APP.hub.description == null) {
+                this.log(LogMessageType.noRoomInfo);
+              } else {
+                this.log(LogMessageType.roomInfo, { info: window.APP.hub.description });
+              }
             }
           }
         }
@@ -350,43 +376,51 @@ export default class MessageDispatch extends EventTarget {
         {
           var msg = new Array();
           var index = 1;
-          if (args == "a") {
-            avatarMap.clear();
-            for (let a of document.querySelectorAll("[networked-avatar]")) {
-              if (a.id !== "avatar-rig") {
-                const name = document.querySelector("#" + a.id).components["player-info"].displayName.trim();
-                avatarMap.set(index.toString(), name);
-                msg.push(`${index} - ${name}`);
-                index++;
+          switch (args[0]) {
+            case "a":
+              {
+                avatarMap.clear();
+                for (let a of document.querySelectorAll("[networked-avatar]")) {
+                  if (a.id !== "avatar-rig") {
+                    const name = document.querySelector("#" + a.id).components["player-info"].displayName.trim();
+                    avatarMap.set(index.toString(), name);
+                    msg.push(`${index} - ${name}`);
+                    index++;
+                  }
+                }
+
+                if (msg == "") {
+                  this.log(LogMessageType.noAvatars);
+                } else {
+                  this.receive({
+                    type: "list_avatars",
+                    msg: msg
+                  });
+                }
               }
-            }
+              break;
+            case "o":
+              {
+                const objects = this.scene.systems["listed-media"].els;
 
-            if (msg == "") {
-              this.log(LogMessageType.noAvatars);
-            } else {
-              this.receive({
-                type: "list_avatars",
-                msg: msg
-              });
-            }
-          } else if (args == "o") {
-            const objects = this.scene.systems["listed-media"].els;
+                for (let o of objects) {
+                  msg.push(`${index} - ${o.components["media-loader"].data.mediaName}`);
+                  index++;
+                }
 
-            for (let o of objects) {
-              msg.push(`${index} - ${o.components["media-loader"].data.mediaName}`);
-              index++;
+                if (msg == "") {
+                  this.log(LogMessageType.noObjects);
+                } else {
+                  this.receive({
+                    type: "list_objects",
+                    msg: msg
+                  });
+                }
+              }
+              break;
+            default: {
+              this.log(LogMessageType.commandError);
             }
-
-            if (msg == "") {
-              this.log(LogMessageType.noObjects);
-            } else {
-              this.receive({
-                type: "list_objects",
-                msg: msg
-              });
-            }
-          } else {
-            this.log(LogMessageType.commandError);
           }
         }
         break;
