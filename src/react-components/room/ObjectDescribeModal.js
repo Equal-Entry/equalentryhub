@@ -6,8 +6,8 @@ import { Column } from "../layout/Column";
 import { TextAreaInputField } from "../input/TextAreaInputField";
 import { Row } from "../layout/Row";
 
-const MAIN_INFO = "Main Info";
-const GENERAL_INFO = "General Info";
+const MAIN_INFO = "Description";
+const GENERAL_INFO = "Custom Accessbility Info";
 
 export function ObjectDescribeModal({ onCancel, targetObject, isPinned }) {
   const [genInput, setGenInput] = useState("");
