@@ -20,6 +20,7 @@ let uiRoot;
 
 const avatarMap = new Map();
 var resultNearbyMap = new Map();
+var resultFovMap = new Map();
 var closestObject;
 
 export default class MessageDispatch extends EventTarget {
@@ -259,9 +260,11 @@ export default class MessageDispatch extends EventTarget {
                 var targetObject;
                 if (!isNaN(args[0])) {
                   targetObject =
-                    args[0] == "o" || "f"
+                    flag == "o"
                       ? this.scene.systems["listed-media"].els[parseInt(args[0]) - 1]
-                      : Array.from(resultNearbyMap.values())[Number(args[0]) - 1];
+                      : flag == "n"
+                        ? Array.from(resultNearbyMap.values())[Number(args[0]) - 1]
+                        : Array.from(resultFovMap.values())[Number(args[0]) - 1];
                 } else if (flag == "n" && !args[0]) {
                   targetObject = closestObject;
                 } else {
@@ -343,7 +346,7 @@ export default class MessageDispatch extends EventTarget {
             case "f":
               {
                 //handle describe nearby objects
-                if (!args[1]) {
+                if (args[0] == "n" && !args[1]) {
                   //if there is no input i.e. /descirbe n
                   this.receive({
                     type: "object_info",
@@ -352,7 +355,10 @@ export default class MessageDispatch extends EventTarget {
                   });
                 } else {
                   //if there is input radius
-                  const targetObject = Array.from(resultNearbyMap.values())[Number(args[1]) - 1];
+                  const targetObject =
+                    args[0] == "n"
+                      ? Array.from(resultNearbyMap.values())[Number(args[1]) - 1]
+                      : Array.from(resultFovMap.values())[Number(args[1]) - 1];
                   this.receive({
                     type: "object_info",
                     object: targetObject.components["media-loader"].data.mediaName,
@@ -445,7 +451,7 @@ export default class MessageDispatch extends EventTarget {
               return a[0] - b[0];
             });
             resultNearbyMap = new Map(resultNearbyArray.map(i => [i[0], i[1]]));
-            closestObject = [...resultNearbyMap][0];
+            closestObject = [...resultNearbyMap][0][1];
 
             var result = new Array();
             var index = 1;
@@ -503,22 +509,21 @@ export default class MessageDispatch extends EventTarget {
           const objects = this.scene.systems["listed-media"].els;
           const frustum = setupCameraFrustum();
           const myPosition = getMyself().object3D.position;
-
-          resultNearbyMap.clear();
+          resultFovMap.clear();
 
           for (let object of objects) {
             const currentDistance = object.object3D.position.distanceTo(myPosition);
             if (frustum.containsPoint(object.object3D.position) && currentDistance < radius) {
-              resultNearbyMap.set(Number.parseFloat(currentDistance).toFixed(2), object);
+              resultFovMap.set(Number.parseFloat(currentDistance).toFixed(2), object);
             }
           }
-          var resultNearbyArray = Array.from(resultNearbyMap);
-          resultNearbyMap = new Map(resultNearbyArray.map(i => [i[0], i[1]]));
-          closestObject = [...resultNearbyMap][0];
+          var resultNearbyArray = Array.from(resultFovMap);
+          resultFovMap = new Map(resultNearbyArray.map(i => [i[0], i[1]]));
+          closestObject = [...resultFovMap][0];
 
           var result = new Array();
           var index = 1;
-          resultNearbyMap.forEach((key, value) => {
+          resultFovMap.forEach((key, value) => {
             result.push(`${index} - ${key.components["media-loader"].data.mediaName} - ${value}m away`);
             index++;
           });
