@@ -275,6 +275,8 @@ export function ChatSidebarContainer({
   const isMobile = AFRAME.utils.device.isMobile();
   const isOverMaxLength = message.length > MAX_MESSAGE_LENGTH;
 
+  var voiceInputEnabled = true;
+
   try {
     var command = [
       "command",
@@ -306,62 +308,63 @@ export function ChatSidebarContainer({
     recognition.lang = "en-US";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
+
+    recognition.onstart = function() {
+      document.getElementById("avatar-rig").messageDispatch.log(LogMessageType.voiceActivated);
+    };
+
+    recognition.onspeechend = function() {
+      document.getElementById("avatar-rig").messageDispatch.log(LogMessageType.voiceAutoStopped);
+    };
+
+    recognition.onerror = function(event) {
+      if (event.error == "no-speech") {
+        document.getElementById("avatar-rig").messageDispatch.log(LogMessageType.noVoiceRecognize);
+      }
+    };
+
+    recognition.onresult = function(event) {
+      var current = event.resultIndex;
+
+      var transcript = event.results[current][0].transcript;
+
+      console.log(transcript);
+      if (transcript.startsWith("Slash ")) {
+        transcript = transcript.replace("Slash ", "/");
+      } else if (transcript.startsWith("flash ")) {
+        transcript = transcript.replace("flash ", "/");
+      } else if (transcript.startsWith("slash ")) {
+        transcript = transcript.replace("slash ", "/");
+      } else if (transcript.startsWith("command ")) {
+        transcript = transcript.replace("command ", "/");
+      } else if (transcript.startsWith("comment ")) {
+        transcript = transcript.replace("comment ", "/");
+      }
+      if (transcript.includes("Wan")) {
+        transcript = transcript.replace("Wan", "one");
+      }
+      transcript = wordsToNumbers(transcript);
+      if (transcript.includes("Avatar")) {
+        transcript = transcript.replace("Avatar", "a");
+      }
+      if (transcript.includes("object")) {
+        transcript = transcript.replace("object", "o");
+      }
+      if (transcript.includes("left")) {
+        transcript = transcript.replace("left", "list");
+      }
+
+      setMessage(transcript);
+    };
+
+    if (onStartVoiceInput) {
+      useEffect(() => {
+        recognition.start();
+      }, []);
+    }
   } catch (e) {
+    voiceInputEnabled = false;
     console.error(e);
-  }
-
-  recognition.onstart = function() {
-    document.getElementById("avatar-rig").messageDispatch.log(LogMessageType.voiceActivated);
-  };
-
-  recognition.onspeechend = function() {
-    document.getElementById("avatar-rig").messageDispatch.log(LogMessageType.voiceAutoStopped);
-  };
-
-  recognition.onerror = function(event) {
-    if (event.error == "no-speech") {
-      document.getElementById("avatar-rig").messageDispatch.log(LogMessageType.noVoiceRecognize);
-    }
-  };
-
-  recognition.onresult = function(event) {
-    var current = event.resultIndex;
-
-    var transcript = event.results[current][0].transcript;
-
-    console.log(transcript);
-    if (transcript.startsWith("Slash ")) {
-      transcript = transcript.replace("Slash ", "/");
-    } else if (transcript.startsWith("flash ")) {
-      transcript = transcript.replace("flash ", "/");
-    } else if (transcript.startsWith("slash ")) {
-      transcript = transcript.replace("slash ", "/");
-    } else if (transcript.startsWith("command ")) {
-      transcript = transcript.replace("command ", "/");
-    } else if (transcript.startsWith("comment ")) {
-      transcript = transcript.replace("comment ", "/");
-    }
-    if (transcript.includes("Wan")) {
-      transcript = transcript.replace("Wan", "one");
-    }
-    transcript = wordsToNumbers(transcript);
-    if (transcript.includes("Avatar")) {
-      transcript = transcript.replace("Avatar", "a");
-    }
-    if (transcript.includes("object")) {
-      transcript = transcript.replace("object", "o");
-    }
-    if (transcript.includes("left")) {
-      transcript = transcript.replace("left", "list");
-    }
-
-    setMessage(transcript);
-  };
-
-  if (onStartVoiceInput) {
-    useEffect(() => {
-      recognition.start();
-    }, []);
   }
 
   return (
@@ -402,11 +405,13 @@ export function ChatSidebarContainer({
             {canSpawnMessages && (
               <SpawnMessageButton disabled={message.length === 0 || isOverMaxLength} onClick={onSpawnMessage} />
             )}
-            <VoiceInputButton
-              onClick={() => {
-                recognition.start();
-              }}
-            />
+            {voiceInputEnabled && (
+              <VoiceInputButton
+                onClick={() => {
+                  recognition.start();
+                }}
+              />
+            )}
           </>
         }
       />
