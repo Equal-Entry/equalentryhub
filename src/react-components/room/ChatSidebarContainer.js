@@ -17,10 +17,11 @@ import {
 import { useMaintainScrollPosition } from "../misc/useMaintainScrollPosition";
 import { spawnChatMessage } from "../chat-message";
 import { discordBridgesForPresences } from "../../utils/phoenix-utils";
-import { useIntl } from "react-intl";
+import { useIntl, FormattedMessage } from "react-intl";
 import { MAX_MESSAGE_LENGTH } from "../../utils/chat-message";
 import { LogMessageType } from "./ChatSidebar";
 import wordsToNumbers from "words-to-numbers";
+import ReactTooltip from "react-tooltip";
 
 const ChatContext = createContext({ messageGroups: [], sendMessage: () => {} });
 
@@ -364,7 +365,7 @@ export function ChatSidebarContainer({
     }
   } catch (e) {
     voiceInputEnabled = false;
-    console.error(e);
+    console.log("voice input not supported.");
   }
 
   return (
@@ -378,6 +379,12 @@ export function ChatSidebarContainer({
           }
         })}
       </ChatMessageList>
+      <ReactTooltip id="notSupportedTip" place="top" effect="solid">
+        <FormattedMessage
+          id="chat-sidebar-container.input-placeholder.voice-input-not-supported"
+          defaultMessage="Voice input is not supported by your browser"
+        />
+      </ReactTooltip>
       <ChatInput
         id="chat-input"
         onKeyDown={onKeyDown}
@@ -406,12 +413,15 @@ export function ChatSidebarContainer({
             {canSpawnMessages && (
               <SpawnMessageButton disabled={message.length === 0 || isOverMaxLength} onClick={onSpawnMessage} />
             )}
-            {voiceInputEnabled && (
+            {voiceInputEnabled ? (
               <VoiceInputButton
+                as="fuck"
                 onClick={() => {
                   recognition.start();
                 }}
               />
+            ) : (
+              <VoiceInputButton disabled data-tip data-for="notSupportedTip" />
             )}
           </>
         }
