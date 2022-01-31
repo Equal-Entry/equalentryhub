@@ -392,6 +392,7 @@ export function ChatSidebarContainer({
             )}
           </>
         }
+        autoFocus
         afterInput={
           <>
             {!isMobile && (
