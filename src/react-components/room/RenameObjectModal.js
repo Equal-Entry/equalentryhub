@@ -4,13 +4,11 @@ import { Modal } from "../modal/Modal";
 import { AcceptButton, CancelButton } from "../input/Button";
 import { Column } from "../layout/Column";
 import { TextInputField } from "../input/TextInputField";
-import { getObjectUrl } from "./object-hooks";
 
 export function RenameObjectModal({ onCancel, targetObject, deselectObject, isPinned }) {
-  const url = getObjectUrl(targetObject);
-  const originalSrc = url.split("|");
-  const originalUrl = originalSrc[0];
-  const originalName = originalSrc[1];
+  const targetEl = targetObject.el;
+  const mediaLoaderData = targetEl.components["media-loader"].data;
+  const originalName = mediaLoaderData.mediaName;
 
   const [input, setInput] = useState("");
 
@@ -20,12 +18,8 @@ export function RenameObjectModal({ onCancel, targetObject, deselectObject, isPi
         <TextInputField label="Please Enter" defaultValue={originalName} onChange={e => setInput(e.target.value)} />
         <AcceptButton
           onClick={() => {
-            const targetEl = targetObject.el;
-            const mediaLoaderData = targetEl.components["media-loader"].data;
-
             const newName = input ? input : originalName;
 
-            mediaLoaderData.src = originalUrl + "|" + newName;
             mediaLoaderData.mediaName = newName;
             targetEl.setAttribute("media-loader", mediaLoaderData);
 
@@ -46,5 +40,6 @@ export function RenameObjectModal({ onCancel, targetObject, deselectObject, isPi
 RenameObjectModal.propTypes = {
   onCancel: PropTypes.func,
   targetObject: PropTypes.object.isRequired,
-  deselectObject: PropTypes.func
+  deselectObject: PropTypes.func,
+  isPinned: PropTypes.bool
 };

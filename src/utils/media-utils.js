@@ -208,6 +208,8 @@ export const addMedia = (
       return name[0].toUpperCase() + name.slice(1);
     });
     mediaName = `${capitalized.join(" ")}, 3D Model`;
+  } else if (contentOrigin == ObjectContentOrigins.FILE) {
+    mediaName = `${src.name.split(".")[0]}, ${src.name.split(".")[1].toUpperCase()} File`;
   }
 
   entity.setAttribute("media-loader", {
