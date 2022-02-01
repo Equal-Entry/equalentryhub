@@ -415,7 +415,6 @@ export function ChatSidebarContainer({
             )}
             {voiceInputEnabled ? (
               <VoiceInputButton
-                as="fuck"
                 onClick={() => {
                   recognition.start();
                 }}
