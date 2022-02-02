@@ -168,7 +168,8 @@ export const LogMessageType = {
   notInFov: "notInFov",
   voiceActivated: "voiceActivate",
   voiceAutoStopped: "voiceAutoStopped",
-  noVoiceRecognize: "noVoiceRecognize"
+  noVoiceRecognize: "noVoiceRecognize",
+  objectXYZPosition: "objectXYZPosition"
 };
 
 const logMessages = defineMessages({
@@ -308,6 +309,10 @@ const logMessages = defineMessages({
   [LogMessageType.noVoiceRecognize]: {
     id: "chat-sidebar.log-message.no-voice-recognize",
     defaultMessage: "No speech detected, please try again."
+  },
+  [LogMessageType.objectXYZPosition]: {
+    id: "chat-sidebar.log-message.object-xyz-position",
+    defaultMessage: "The position(XYZ) for this object is {position}."
   }
 });
 

@@ -22,6 +22,7 @@ const avatarMap = new Map();
 var resultNearbyMap = new Map();
 var resultFovMap = new Map();
 var closestObject;
+var objectToSet;
 
 export default class MessageDispatch extends EventTarget {
   constructor(scene, entryManager, hubChannel, remountUI, mediaSearchStore) {
@@ -531,6 +532,38 @@ export default class MessageDispatch extends EventTarget {
             type: "list_objects_in_fov",
             result: result
           });
+        }
+        break;
+      case "xyz":
+        {
+          switch (args[0]) {
+            case "o":
+              {
+                objectToSet = this.scene.systems["listed-media"].els[parseInt(args[1]) - 1];
+              }
+              break;
+            case "n":
+              {
+                objectToSet = Array.from(resultNearbyMap.values())[Number(args[1]) - 1];
+              }
+              break;
+            case "f":
+              {
+                objectToSet = Array.from(resultFovMap.values())[Number(args[1]) - 1];
+              }
+              break;
+          }
+          const position = objectToSet.object3D.position;
+          this.log(LogMessageType.objectXYZPosition, {
+            position: ` x: ${position.x}, y: ${position.y}, z: ${position.z}`
+          });
+        }
+        break;
+      case "set":
+        {
+          if (!(objectToSet.components.pinnable && objectToSet.components.pinnable.data.pinned)) {
+            objectToSet.object3D.position.set(args[0], args[1], args[2]);
+          }
         }
         break;
       case "a11y":
