@@ -199,7 +199,7 @@ export const addMedia = (
     } else {
       mediaName = `${src.split("|")[1]}, 3D Model`;
     }
-  } else if (typeof src === "object" && src.name.includes("|")) {
+  } else if (typeof src === "object" && !!src.name && src.name.includes("|")) {
     mediaName = `${src.name.split("|")[1]}, Label`;
   } else if (typeof src === "string" && src.includes("3d-models/")) {
     const nameString = src.split("3d-models/")[1].split("-");
@@ -210,6 +210,14 @@ export const addMedia = (
     mediaName = `${capitalized.join(" ")}, 3D Model`;
   } else if (contentOrigin == ObjectContentOrigins.FILE) {
     mediaName = `${src.name.split(".")[0]}, ${src.name.split(".")[1].toUpperCase()} File`;
+  } else if (src.constructor.name == "MediaStream") {
+    var playerName;
+    for (let p of window.APP.componentRegistry["player-info"]) {
+      if (p.el.id == "avatar-rig") {
+        playerName = p.displayName;
+      }
+    }
+    mediaName = `${playerName}'s Share Sreen`;
   }
 
   entity.setAttribute("media-loader", {
