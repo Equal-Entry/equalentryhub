@@ -352,7 +352,7 @@ export function formatSystemMessage(entry, intl) {
       return (
         <FormattedMessage
           id="chat-sidebar.system-message.list-objects-in-fov"
-          defaultMessage="The objects in your field of view are: {msg}"
+          defaultMessage="The objects/avatars in your field of view are: {msg}"
           values={{
             msg: (
               <b>

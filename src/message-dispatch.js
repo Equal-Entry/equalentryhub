@@ -12,7 +12,7 @@ import {
   getObjectByName,
   goToGivenObject,
   getMyself,
-  parseObjectDescription,
+  parseDescription,
   setupCameraFrustum
 } from "./utils/accessbility";
 let uiRoot;
@@ -276,7 +276,12 @@ export default class MessageDispatch extends EventTarget {
                 if (targetObject == null) {
                   this.log(LogMessageType.moveFailed);
                 } else {
-                  goToGivenObject(this.scene, targetObject, characterController, 1.5);
+                  goToGivenObject(
+                    this.scene,
+                    targetObject,
+                    characterController,
+                    !!targetObject.components["player-info"] ? 0.5 : 1.5
+                  );
                   this.log(LogMessageType.moveSucssful);
                 }
               }
@@ -339,7 +344,7 @@ export default class MessageDispatch extends EventTarget {
                 this.receive({
                   type: "object_info",
                   object: fullName,
-                  info: parseObjectDescription(targetObject)
+                  info: parseDescription(targetObject)
                 });
               }
               break;
@@ -352,7 +357,7 @@ export default class MessageDispatch extends EventTarget {
                   this.receive({
                     type: "object_info",
                     object: closestObject.components["media-loader"].data.mediaName,
-                    info: parseObjectDescription(closestObject)
+                    info: parseDescription(closestObject)
                   });
                 } else {
                   //if there is input radius
@@ -362,8 +367,10 @@ export default class MessageDispatch extends EventTarget {
                       : Array.from(resultFovMap.values())[Number(args[1]) - 1];
                   this.receive({
                     type: "object_info",
-                    object: targetObject.components["media-loader"].data.mediaName,
-                    info: parseObjectDescription(targetObject)
+                    object: !!targetObject.components["player-info"]
+                      ? targetObject.components["player-info"].displayName.trim()
+                      : targetObject.components["media-loader"].data.mediaName,
+                    info: parseDescription(targetObject)
                   });
                 }
               }
@@ -507,17 +514,24 @@ export default class MessageDispatch extends EventTarget {
           var radius = Number.MAX_VALUE;
           if (!!args[0]) radius = Number(args[0]);
 
-          const objects = this.scene.systems["listed-media"].els;
           const frustum = setupCameraFrustum();
           const myPosition = getMyself().object3D.position;
           resultFovMap.clear();
 
-          for (let object of objects) {
+          for (let object of this.scene.systems["listed-media"].els) {
             const currentDistance = object.object3D.position.distanceTo(myPosition);
             if (frustum.containsPoint(object.object3D.position) && currentDistance < radius) {
               resultFovMap.set(Number.parseFloat(currentDistance).toFixed(2), object);
             }
           }
+
+          for (let avatar of document.querySelectorAll("[networked-avatar]")) {
+            const currentDistance = avatar.object3D.position.distanceTo(myPosition);
+            if (avatar.id !== "avatar-rig" && currentDistance < radius) {
+              resultFovMap.set(Number.parseFloat(currentDistance).toFixed(2), avatar);
+            }
+          }
+
           var resultNearbyArray = Array.from(resultFovMap);
           resultFovMap = new Map(resultNearbyArray.map(i => [i[0], i[1]]));
           closestObject = [...resultFovMap][0];
@@ -525,7 +539,12 @@ export default class MessageDispatch extends EventTarget {
           var result = new Array();
           var index = 1;
           resultFovMap.forEach((key, value) => {
-            result.push(`${index} - ${key.components["media-loader"].data.mediaName} - ${value}m away`);
+            if (!!key.components["player-info"]) {
+              result.push(`${index} - (Avatar)${key.components["player-info"].displayName.trim()} - ${value}m away`);
+            } else {
+              result.push(`${index} - (Object)${key.components["media-loader"].data.mediaName} - ${value}m away`);
+            }
+
             index++;
           });
           this.receive({

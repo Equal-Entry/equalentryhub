@@ -129,8 +129,13 @@ export function formatListMsg(msgArray) {
   return messageContainer;
 }
 
-export function parseObjectDescription(object) {
+export function parseDescription(object) {
   const info = new Array();
+  if (!!object.components["player-info"]) {
+    info.push(object.components["player-info"].data.description);
+    return info;
+  }
+
   try {
     const descJson = JSON.parse(object.components["media-loader"].data.description);
     for (let key in descJson) info.push(`${key} : ${descJson[key]}`);
