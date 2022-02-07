@@ -95,6 +95,7 @@ import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
 import { RenameObjectModal } from "./room/RenameObjectModal";
 import { ObjectDescribeModal } from "./room/ObjectDescribeModal";
+import { ShowDescriptionModal } from "./room/ShowDescriptionModal";
 import { MediaDevicesEvents } from "../utils/media-devices-utils";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
@@ -207,7 +208,10 @@ class UIRoot extends Component {
     targetObjectIsPinned: false,
 
     showEditDesciption: false,
-    startVoiceInput: false
+    startVoiceInput: false,
+
+    showDescTargetObj: null,
+    showObjectDesciption: false
   };
 
   constructor(props) {
@@ -337,6 +341,10 @@ class UIRoot extends Component {
     this.props.scene.addEventListener("action_toggle_voice_input", () =>
       this.toggleSidebar("chat", { startVoiceInput: true })
     );
+    this.props.scene.addEventListener("action_toggle_show_description", e => {
+      this.setState({ showDescTargetObj: e.detail });
+      this.setState({ showObjectDesciption: true });
+    });
 
     this.updateMediaPermissions();
 
@@ -1400,7 +1408,7 @@ class UIRoot extends Component {
                       </ContentMenu>
                     )}
                     {!entered && !streaming && !isMobile && streamerName && <SpectatingLabel name={streamerName} />}
-                    {this.state.showRename ? (
+                    {this.state.showRename && (
                       <RenameObjectModal
                         show={this.state.showRename}
                         onCancel={() => this.setState({ showRename: false })}
@@ -1408,15 +1416,22 @@ class UIRoot extends Component {
                         deselectObject={this.state.deselectObject}
                         isPinned={this.state.targetObjectIsPinned}
                       />
-                    ) : null}
-                    {this.state.showEditDesciption ? (
+                    )}
+                    {this.state.showEditDesciption && (
                       <ObjectDescribeModal
                         show={this.state.showEditDesciption}
                         targetObject={this.state.renameTarget}
                         isPinned={this.state.targetObjectIsPinned}
                         onCancel={() => this.setState({ showEditDesciption: false })}
                       />
-                    ) : null}
+                    )}
+                    {this.state.showObjectDesciption && (
+                      <ShowDescriptionModal
+                        show={this.state.showObjectDesciption}
+                        onCancel={() => this.setState({ showObjectDesciption: false })}
+                        targetObject={this.state.showDescTargetObj}
+                      />
+                    )}
                     {this.props.activeObject && (
                       <ObjectMenuContainer
                         hubChannel={this.props.hubChannel}

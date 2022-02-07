@@ -123,6 +123,7 @@ import "./components/emit-scene-event-on-remove";
 import "./components/follow-in-fov";
 import "./components/matrix-auto-update";
 import "./components/clone-media-button";
+import "./components/description-media-button";
 import "./components/open-media-button";
 import "./components/refresh-media-button";
 import "./components/tweet-media-button";
