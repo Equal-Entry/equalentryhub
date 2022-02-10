@@ -8,6 +8,7 @@ import { Row } from "../layout/Row";
 import { InputField } from "../input/InputField";
 import { ReactComponent as VoiceIcon } from "../icons/VolumeHigh.svg";
 import { IconButton } from "../input/IconButton";
+import { Button } from "../input/Button";
 
 export function ShowDescriptionModal({ onCancel, targetObject }) {
   const name = targetObject.components["media-loader"].data.mediaName;
@@ -44,14 +45,27 @@ export function ShowDescriptionModal({ onCancel, targetObject }) {
         </IconButton>
       }
     >
-      <Column padding center>
-        <InputField
-          style={{ textAlign: "left" }}
-          label={<FormattedMessage id="room-sidebar.object-name" defaultMessage="Name" />}
-        >
-          {name}
-        </InputField>
-        {descrption}
+      <Column padding="sm" center>
+        <Row padding="sm" center noWrap>
+          <Column padding center>
+            <InputField
+              style={{ textAlign: "left" }}
+              label={<FormattedMessage id="room-sidebar.object-name" defaultMessage="Name" />}
+            >
+              {name}
+            </InputField>
+            {descrption}
+          </Column>
+          <Button sm style={{ "min-height": "90px" }} onClick={() => responsiveVoice.speak(contentToSpeech)}>
+            <Column padding center>
+              <div style={{ marginLeft: "5px" }}>
+                <VoiceIcon width={36} height={36} />
+              </div>
+
+              <FormattedMessage id="description-modal.voice" defaultMessage="Voice" />
+            </Column>
+          </Button>
+        </Row>
         <Row padding="sm">
           <span>&nbsp;&nbsp;&nbsp;</span>
           <CancelButton sm onClick={onCancel} />
