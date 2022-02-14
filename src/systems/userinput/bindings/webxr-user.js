@@ -583,7 +583,7 @@ export const webXRUserBindings = addSetsToBindings({
     },
     {
       src: { value: upperButtons },
-      dest: { value: paths.actions.startInspecting },
+      dest: { value: paths.actions.speechDesc },
       xform: xforms.rising
     }
   ],
