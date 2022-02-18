@@ -2,12 +2,15 @@ import { paths } from "./userinput/paths";
 import { SOUND_HOVER_OR_GRAB } from "./sound-effects-system";
 import { isUI } from "./interactions";
 
+var sfxPlaying = false;
+
 export class InteractionSfxSystem {
   constructor() {}
 
   tick(interaction, userinput, sfx) {
     const state = interaction.state;
     const previousState = interaction.previousState;
+    const hoveredEl = interaction.state.rightRemote.hovered || interaction.state.leftRemote.hovered;
 
     if (
       state.leftHand.held !== previousState.leftHand.held ||
@@ -15,9 +18,13 @@ export class InteractionSfxSystem {
       state.rightRemote.held !== previousState.rightRemote.held ||
       (isUI(state.rightRemote.hovered) && state.rightRemote.hovered !== previousState.rightRemote.hovered) ||
       state.leftRemote.held !== previousState.leftRemote.held ||
-      (isUI(state.leftRemote.hovered) && state.leftRemote.hovered !== previousState.leftRemote.hovered)
+      (isUI(state.leftRemote.hovered) && state.leftRemote.hovered !== previousState.leftRemote.hovered) ||
+      (!!hoveredEl && !sfxPlaying)
     ) {
       sfx.playSoundOneShot(SOUND_HOVER_OR_GRAB);
+      sfxPlaying = true;
+    } else if (!hoveredEl && sfxPlaying) {
+      sfxPlaying = false;
     }
 
     if (userinput.get(paths.actions.logInteractionState)) {

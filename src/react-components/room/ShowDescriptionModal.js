@@ -13,7 +13,7 @@ import { Button } from "../input/Button";
 export function ShowDescriptionModal({ onCancel, targetObject }) {
   const name = targetObject.components["media-loader"].data.mediaName;
   const descrption = [];
-  var contentToSpeech = `The description for object ${name}: `;
+  var contentToSpeech = `Object ${name}: `;
   try {
     const desc = JSON.parse(targetObject.components["media-loader"].data.description);
     for (let key in desc) {
@@ -25,6 +25,7 @@ export function ShowDescriptionModal({ onCancel, targetObject }) {
       );
     }
   } catch (e) {
+    contentToSpeech = contentToSpeech + ` no description.`;
     descrption.push(
       <InputField label={<FormattedMessage id="objects-sidebar.object-decs" defaultMessage="Object Description" />}>
         <FormattedMessage id="objects-sidebar.object-no-decs" defaultMessage="This object has no description yet." />

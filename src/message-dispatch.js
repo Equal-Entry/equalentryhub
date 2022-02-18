@@ -540,9 +540,9 @@ export default class MessageDispatch extends EventTarget {
           var index = 1;
           resultFovMap.forEach((key, value) => {
             if (!!key.components["player-info"]) {
-              result.push(`${index} - (Avatar)${key.components["player-info"].displayName.trim()} - ${value}m away`);
+              result.push(`${index} - ${key.components["player-info"].displayName.trim()}, Avatar - ${value}m away`);
             } else {
-              result.push(`${index} - (Object)${key.components["media-loader"].data.mediaName} - ${value}m away`);
+              result.push(`${index} - ${key.components["media-loader"].data.mediaName} - ${value}m away`);
             }
 
             index++;
