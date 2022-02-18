@@ -217,7 +217,7 @@ export const addMedia = (
         playerName = p.displayName;
       }
     }
-    mediaName = `${playerName}'s Share Sreen`;
+    mediaName = `${playerName}'s Shared Screen`;
   }
 
   entity.setAttribute("media-loader", {

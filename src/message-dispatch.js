@@ -454,11 +454,11 @@ export default class MessageDispatch extends EventTarget {
               }
             }
             //sort the map with distance from close to far
-            var resultNearbyArray = Array.from(resultNearbyMap);
-            resultNearbyArray.sort(function(a, b) {
+            var resultFovArray = Array.from(resultNearbyMap);
+            resultFovArray.sort(function(a, b) {
               return a[0] - b[0];
             });
-            resultNearbyMap = new Map(resultNearbyArray.map(i => [i[0], i[1]]));
+            resultNearbyMap = new Map(resultFovArray.map(i => [i[0], i[1]]));
             closestObject = [...resultNearbyMap][0][1];
 
             var result = new Array();
@@ -532,8 +532,11 @@ export default class MessageDispatch extends EventTarget {
             }
           }
 
-          var resultNearbyArray = Array.from(resultFovMap);
-          resultFovMap = new Map(resultNearbyArray.map(i => [i[0], i[1]]));
+          var resultFovArray = Array.from(resultFovMap);
+          resultFovArray.sort(function(a, b) {
+            return a[0] - b[0];
+          });
+          resultFovMap = new Map(resultFovArray.map(i => [i[0], i[1]]));
           closestObject = [...resultFovMap][0];
 
           var result = new Array();
