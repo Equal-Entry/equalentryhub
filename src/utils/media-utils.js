@@ -188,28 +188,36 @@ export const addMedia = (
   const version = getLatestMediaVersionOfSrc(src);
 
   var mediaName = "";
+  var role = "";
 
   if (typeof src === "string" && src.includes("tenor")) {
-    mediaName = "Tenor Image(No Name), GIF";
+    mediaName = "Tenor Image(No Name)";
+    role = "GIF";
   } else if (typeof src === "string" && src.includes("|")) {
     if (src.includes("avatar")) {
-      mediaName = `${src.split("|")[1]}, Avatar Model`;
+      mediaName = `${src.split("|")[1]}`;
+      role = "Avatar Model";
     } else if (src.includes("scene")) {
-      mediaName = `${src.split("|")[1]}, Scene Preview`;
+      mediaName = `${src.split("|")[1]}`;
+      role = "Scene Preview";
     } else {
-      mediaName = `${src.split("|")[1]}, 3D Model`;
+      mediaName = `${src.split("|")[1]}`;
+      role = "3D Model";
     }
   } else if (typeof src === "object" && !!src.name && src.name.includes("|")) {
-    mediaName = `${src.name.split("|")[1]}, Label`;
+    mediaName = `${src.name.split("|")[1]}`;
+    role = "Label";
   } else if (typeof src === "string" && src.includes("3d-models/")) {
     const nameString = src.split("3d-models/")[1].split("-");
     nameString.pop();
     const capitalized = nameString.map(name => {
       return name[0].toUpperCase() + name.slice(1);
     });
-    mediaName = `${capitalized.join(" ")}, 3D Model`;
+    mediaName = `${capitalized.join(" ")}`;
+    role = "3D Model";
   } else if (contentOrigin == ObjectContentOrigins.FILE) {
-    mediaName = `${src.name.split(".")[0]}, ${src.name.split(".")[1].toUpperCase()} File`;
+    mediaName = `${src.name.split(".")[0]}`;
+    role = `${src.name.split(".")[1].toUpperCase()} File`;
   } else if (src.constructor.name == "MediaStream") {
     var playerName;
     for (let p of window.APP.componentRegistry["player-info"]) {
@@ -217,7 +225,8 @@ export const addMedia = (
         playerName = p.displayName;
       }
     }
-    mediaName = `${playerName}'s Shared Screen`;
+    mediaName = `${playerName}'s`;
+    role = "Shared Screen";
   }
 
   entity.setAttribute("media-loader", {
@@ -226,6 +235,7 @@ export const addMedia = (
     animate,
     src: typeof src === "string" ? coerceToUrl(src) || src : "",
     mediaName: mediaName,
+    role: role,
     version,
     contentSubtype,
     fileIsOwned: !needsToBeUploaded,

@@ -26,6 +26,7 @@ export default function pinnedEntityToGltf(el) {
     const mediaVersion = components["media-loader"].data.version;
     const mediaContentSubtype = components["media-loader"].data.contentSubtype;
     const mediaName = components["media-loader"].data.mediaName;
+    const role = components["media-loader"].data.role;
     const mediaDescription = components["media-loader"].data.description;
 
     if (mediaSrc.startsWith("hubs://") && mediaSrc.endsWith("/video")) {
@@ -39,6 +40,7 @@ export default function pinnedEntityToGltf(el) {
       contentSubtype: mediaContentSubtype,
       id: networkId,
       mediaName: mediaName,
+      role: role,
       description: mediaDescription
     };
 

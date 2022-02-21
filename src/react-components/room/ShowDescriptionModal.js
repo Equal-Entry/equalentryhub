@@ -12,8 +12,9 @@ import { Button } from "../input/Button";
 
 export function ShowDescriptionModal({ onCancel, targetObject }) {
   const name = targetObject.components["media-loader"].data.mediaName;
+  const role = targetObject.components["media-loader"].data.role;
   const descrption = [];
-  var contentToSpeech = `Object ${name}: `;
+  var contentToSpeech = `Object ${name}, ${role}: `;
   try {
     const desc = JSON.parse(targetObject.components["media-loader"].data.description);
     for (let key in desc) {

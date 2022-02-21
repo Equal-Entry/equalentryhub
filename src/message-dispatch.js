@@ -335,7 +335,9 @@ export default class MessageDispatch extends EventTarget {
                 if (!isNaN(args[0])) {
                   targetObject = this.scene.systems["listed-media"].els[parseInt(args[0]) - 1];
                   if (!!targetObject) {
-                    fullName = targetObject.components["media-loader"].data.mediaName;
+                    fullName = `${targetObject.components["media-loader"].data.mediaName}, ${
+                      targetObject.components["media-loader"].data.role
+                    }`;
                   }
                 } else {
                   fullName = this.formatArgs(args);
@@ -356,7 +358,9 @@ export default class MessageDispatch extends EventTarget {
                   //if there is no input i.e. /descirbe n
                   this.receive({
                     type: "object_info",
-                    object: closestObject.components["media-loader"].data.mediaName,
+                    object: `${closestObject.components["media-loader"].data.mediaName}, ${
+                      closestObject.components["media-loader"].data.role
+                    }`,
                     info: parseDescription(closestObject)
                   });
                 } else {
@@ -369,7 +373,9 @@ export default class MessageDispatch extends EventTarget {
                     type: "object_info",
                     object: !!targetObject.components["player-info"]
                       ? targetObject.components["player-info"].displayName.trim()
-                      : targetObject.components["media-loader"].data.mediaName,
+                      : `${targetObject.components["media-loader"].data.mediaName}, ${
+                          targetObject.components["media-loader"].data.role
+                        }`,
                     info: parseDescription(targetObject)
                   });
                 }
@@ -418,7 +424,11 @@ export default class MessageDispatch extends EventTarget {
                 const objects = this.scene.systems["listed-media"].els;
 
                 for (let o of objects) {
-                  msg.push(`${index} - ${o.components["media-loader"].data.mediaName}`);
+                  msg.push(
+                    `${index} - ${o.components["media-loader"].data.mediaName}, ${
+                      o.components["media-loader"].data.role
+                    }`
+                  );
                   index++;
                 }
 
@@ -464,7 +474,11 @@ export default class MessageDispatch extends EventTarget {
             var result = new Array();
             var index = 1;
             resultNearbyMap.forEach((key, value) => {
-              result.push(`${index} - ${key.components["media-loader"].data.mediaName} - ${value}m away`);
+              result.push(
+                `${index} - ${key.components["media-loader"].data.mediaName}, ${
+                  key.components["media-loader"].data.role
+                } - ${value}m away`
+              );
               index++;
             });
 
@@ -485,9 +499,9 @@ export default class MessageDispatch extends EventTarget {
             }
             var msg = "There is no object in this room";
             if (!!closestObject) {
-              msg = `${closestObject.components["media-loader"].data.mediaName} - ${Number.parseFloat(
-                closestObjectDistance
-              ).toFixed(2)}m away`;
+              msg = `${closestObject.components["media-loader"].data.mediaName}, ${
+                closestObject.components["media-loader"].data.role
+              } - ${Number.parseFloat(closestObjectDistance).toFixed(2)}m away`;
             }
             this.receive({
               type: "closest_object",
@@ -545,7 +559,11 @@ export default class MessageDispatch extends EventTarget {
             if (!!key.components["player-info"]) {
               result.push(`${index} - ${key.components["player-info"].displayName.trim()}, Avatar - ${value}m away`);
             } else {
-              result.push(`${index} - ${key.components["media-loader"].data.mediaName} - ${value}m away`);
+              result.push(
+                `${index} - ${key.components["media-loader"].data.mediaName}, ${
+                  key.components["media-loader"].data.role
+                } - ${value}m away`
+              );
             }
 
             index++;

@@ -6,7 +6,8 @@ function getDisplayString(el) {
   // Having a listed-media component does not guarantee the existence of a media-loader component,
   // so don't crash if there isn't one.
   const url = (el.components["media-loader"] && el.components["media-loader"].data.src) || "";
-  if (!!el.components["media-loader"].data.mediaName) return el.components["media-loader"].data.mediaName;
+  if (!!el.components["media-loader"].data.mediaName && !!el.components["media-loader"].data.role)
+    return `${el.components["media-loader"].data.mediaName}, ${el.components["media-loader"].data.role}`;
   if (url.includes("|")) {
     const name = url.split("|")[1];
     el.components["media-loader"].data.mediaName = name;

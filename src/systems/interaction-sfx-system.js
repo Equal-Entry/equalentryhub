@@ -1,5 +1,5 @@
 import { paths } from "./userinput/paths";
-import { SOUND_HOVER_OR_GRAB } from "./sound-effects-system";
+import { SOUND_HOVER_OR_GRAB, SOUND_PIN } from "./sound-effects-system";
 import { isUI } from "./interactions";
 
 var sfxPlaying = false;
@@ -24,6 +24,7 @@ export class InteractionSfxSystem {
       sfx.playSoundOneShot(SOUND_HOVER_OR_GRAB);
       sfxPlaying = true;
     } else if (!hoveredEl && sfxPlaying) {
+      sfx.playSoundOneShot(SOUND_PIN);
       sfxPlaying = false;
     }
 

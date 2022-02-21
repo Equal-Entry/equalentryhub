@@ -187,6 +187,7 @@ AFRAME.GLTFModelPlus.registerComponent("media", "media", (el, componentName, com
     animate: false,
     contentSubtype: componentData.contentSubtype,
     mediaName: componentData.mediaName,
+    role: componentData.role,
     description: componentData.description
   };
 
