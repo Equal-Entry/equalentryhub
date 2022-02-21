@@ -63,6 +63,9 @@ export function ObjectsSidebarContainer({ onClose, hubChannel }) {
           <InputField label={<FormattedMessage id="room-sidebar.object-name" defaultMessage="Name" />}>
             {selectedDescObj.el.components["media-loader"].data.mediaName}
           </InputField>
+          <InputField label={<FormattedMessage id="room-sidebar.object-role" defaultMessage="Role" />}>
+            {selectedDescObj.el.components["media-loader"].data.role}
+          </InputField>
           {descInfo}
         </Column>
       </Sidebar>

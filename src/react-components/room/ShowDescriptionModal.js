@@ -56,6 +56,12 @@ export function ShowDescriptionModal({ onCancel, targetObject }) {
             >
               {name}
             </InputField>
+            <InputField
+              style={{ textAlign: "left" }}
+              label={<FormattedMessage id="room-sidebar.object-role" defaultMessage="Role" />}
+            >
+              {selectedDescObj.el.components["media-loader"].data.role}
+            </InputField>
             {descrption}
           </Column>
           <Button sm style={{ "min-height": "90px" }} onClick={() => responsiveVoice.speak(contentToSpeech)}>
