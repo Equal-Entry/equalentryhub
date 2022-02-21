@@ -15,7 +15,7 @@ export function RenameObjectModal({ onCancel, targetObject, deselectObject, isPi
   return (
     <Modal title="Rename This Object">
       <Column padding center>
-        <TextInputField label="Please Enter" defaultValue={originalName} onChange={e => setInput(e.target.value)} />
+        <TextInputField label="Name" defaultValue={originalName} onChange={e => setInput(e.target.value)} />
         <AcceptButton
           onClick={() => {
             const newName = input ? input : originalName;

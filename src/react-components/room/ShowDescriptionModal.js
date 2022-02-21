@@ -60,7 +60,7 @@ export function ShowDescriptionModal({ onCancel, targetObject }) {
               style={{ textAlign: "left" }}
               label={<FormattedMessage id="room-sidebar.object-role" defaultMessage="Role" />}
             >
-              {selectedDescObj.el.components["media-loader"].data.role}
+              {role}
             </InputField>
             {descrption}
           </Column>
