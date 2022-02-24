@@ -296,7 +296,7 @@ const logMessages = defineMessages({
   },
   [LogMessageType.notInFov]: {
     id: "chat-sidebar.log-message.not-in-fov",
-    defaultMessage: "This object is not in your avatar's field of view."
+    defaultMessage: "This object is not currently in your avatar's field of view."
   },
   [LogMessageType.voiceActivated]: {
     id: "chat-sidebar.log-message.voice-activated",
