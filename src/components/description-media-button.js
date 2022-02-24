@@ -28,9 +28,7 @@ AFRAME.registerComponent("description-media-button", {
           for (let key in desc) {
             contentToSpeech = contentToSpeech + ` ${key}: ${desc[key]}.`;
           }
-        } catch (e) {
-          contentToSpeech = contentToSpeech + ` no description.`;
-        }
+        } catch (e) {}
         responsiveVoice.speak(contentToSpeech);
       }
     }
