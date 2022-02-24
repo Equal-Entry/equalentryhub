@@ -156,7 +156,7 @@ export const LogMessageType = {
   audioResumed: "audioResumed",
   joinFailed: "joinFailed",
   avatarChanged: "avatarChanged",
-  moveSucssful: "moveSucssful",
+  moveSuccessful: "moveSuccessful",
   moveFailed: "moveFailed",
   moveToMyself: "moveToMyself",
   roomInfo: "roomInfo",
@@ -258,9 +258,9 @@ const logMessages = defineMessages({
     id: "chat-sidebar.log-message.avatar-changed",
     defaultMessage: "Your avatar has been changed."
   },
-  [LogMessageType.moveSucssful]: {
-    id: "chat-sidebar.log-message.move-sucssful",
-    defaultMessage: "Your avatar move into the target avatar or objects sucssfully."
+  [LogMessageType.moveSuccessful]: {
+    id: "chat-sidebar.log-message.move-successful",
+    defaultMessage: "Your avatar moved to the target successfully."
   },
   [LogMessageType.moveFailed]: {
     id: "chat-sidebar.log-message.move-failed",

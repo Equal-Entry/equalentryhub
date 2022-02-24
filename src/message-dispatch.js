@@ -246,7 +246,7 @@ export default class MessageDispatch extends EventTarget {
                     this.log(LogMessageType.moveToMyself);
                   } else {
                     goToGivenObject(this.scene, el, characterController, 0.5);
-                    this.log(LogMessageType.moveSucssful);
+                    this.log(LogMessageType.moveSuccessful);
                   }
                 } catch (e) {
                   this.log(LogMessageType.commandError);
@@ -282,7 +282,7 @@ export default class MessageDispatch extends EventTarget {
                     characterController,
                     !!targetObject.components["player-info"] ? 0.5 : 1.5
                   );
-                  this.log(LogMessageType.moveSucssful);
+                  this.log(LogMessageType.moveSuccessful);
                 }
               }
               break;
