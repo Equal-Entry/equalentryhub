@@ -1,4 +1,5 @@
 import { paths } from "../systems/userinput/paths";
+import { goToGivenObject, getMyself } from "../utils/accessbility";
 
 AFRAME.registerComponent("description-media-button", {
   init() {
@@ -30,6 +31,17 @@ AFRAME.registerComponent("description-media-button", {
           }
         } catch (e) {}
         responsiveVoice.speak(contentToSpeech);
+      }
+    }
+    const toggleMoveToObj = userinput.get(paths.actions.moveToObj);
+    if (toggleMoveToObj) {
+      const interaction = AFRAME.scenes[0].systems.interaction;
+
+      const hoveredEl = interaction.state.rightRemote.hovered || interaction.state.leftRemote.hovered;
+      if (!!hoveredEl) {
+        const characterController = getMyself().sceneEl.systems["hubs-systems"].characterController;
+        console.log(hoveredEl.components["media-loader"]);
+        goToGivenObject(scene, hoveredEl, characterController, !!hoveredEl.components["player-info"] ? 0.5 : 1.5);
       }
     }
   },

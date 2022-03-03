@@ -128,6 +128,11 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       xform: xforms.rising
     },
     {
+      src: { value: paths.device.keyboard.key("n") },
+      dest: { value: paths.actions.moveToObj },
+      xform: xforms.rising
+    },
+    {
       src: { value: paths.device.keyboard.key(" ") },
       dest: { value: paths.actions.ensureFrozen },
       xform: xforms.copy

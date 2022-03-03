@@ -21,6 +21,7 @@ paths.actions.spawnPen = "/actions/spawnPen";
 paths.actions.ensureFrozen = "/actions/ensureFrozen";
 paths.actions.toggleFreeze = "/actions/toggleFreeze";
 paths.actions.speechDesc = "/actions/speechDesc";
+paths.actions.moveToObj = "/actions/moveToObj";
 paths.actions.thaw = "/actions/thaw";
 paths.actions.muteMic = "/actions/muteMic";
 paths.actions.toggleFly = "/actions/toggleFly";
