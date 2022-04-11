@@ -42,6 +42,18 @@ list nearby media object from user avatar's current location
 ### view
 /view - check whether a given media object is in in user avatar's current field of view
 
+## Resources from adXR Community
+[Jesse Anderson](https://twitter.com/bgfh79) reviewed the Hubs prototype on his IllegallySighted YouTube channel. 
+
+[![Watch the Walk Through](https://i.imgur.com/0KeWCjf.png)](https://www.youtube.com/watch?v=o2Bo-QwLQRQ)
+
+
+[Sage Freedman](https://twitter.com/sagefreeman) provided two avatars that we use to assist with testing the implementations.  The Full Occlusion avatar will see nothing on the scree. The Partial Occlusion avatar will experience the environment through a dimmed filter. 
+Full Occlusion - https://hubs.mozilla.com/avatars/fn4oj4D
+Partial Occlusion - https://hubs.mozilla.com/avatars/V6ewezR
+
+[Christian Van Meurs](https://www.linkedin.com/in/christian-van-meurs-19861321/) created the school environment that we are using to illustrate multiple accessibility principles. Review the [Classroom in Spoke](https://hubs.mozilla.com/spoke/projects/new?sceneId=OojOIa3)
+
 # [Mozilla Hubs](https://hubs.mozilla.com/)
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0) [![Build Status](https://travis-ci.org/mozilla/hubs.svg?branch=master)](https://travis-ci.org/mozilla/hubs) [![Discord](https://img.shields.io/discord/498741086295031808)](https://discord.gg/CzAbuGu)
