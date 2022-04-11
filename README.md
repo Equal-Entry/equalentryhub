@@ -1,8 +1,12 @@
 # Welcome to Equal Entry Hub - a fork of Mozilla Hubs Cloud seeking to make it more accessible
 
+This project began in December 2021 as a Equal Entry project collaboration between [Thomas Logan](https://twitter.com/techthomas), [Roland Dubois](https://twitter.com/rdub80), and Owen Wang. We focused on creating a working prototype of new accessibility functionality that can live inside of Mozilla Hubs.  We chose Mozilla Hubs because it is an open source system that allows for open customization and collaboration. We have benefitted greatly from from the advice of the Mozilla Hubs tema and appreciate Mozilla's commitment to making a more accessible world.  
+
+This project is now part of the the 3D Content Descriptions group is part of the Accessible Development of XR [adXR Workstream](https://xraccess.org/workstreams/adxr/) at XRAccess and will be used to demonstrate features that enable people who are blind or low-vision to get information about content that is used within spatial worlds. Our initial project was begun working with intern Owen Wang from Equal Entry to customize Mozilla Hubs and make it more accessible to people who are blind or low vision. 
+
 ## Supported Commands
 
-The 3D Content Descriptions group is part of the Accessible Development of XR [adXR Workstream](https://xraccess.org/workstreams/adxr/) at XRAccess and will be used to demonstrate features that enable people who are blind or low-vision to get information about content that is used within spatial worlds. Our initial project was begun working with intern Owen Wang from Equal Entry to customize Mozilla Hubs and make it more accessible to people who are blind or low vision. 
+
 
 ### a11y
 The a11y command can be used to get a list of commands that are supported in the current prototype.
