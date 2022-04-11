@@ -1,6 +1,22 @@
 # Welcome to Equal Entry Hub - a fork of Mozilla Hubs Cloud seeking to make it more accessible
 
 ## Supported Commands
+### a11y
+The a11y command can be used to get a list of commands that are supported in the current prototype.
+
+`/a11y`
+
+When the values are returned they will be 
+```
+The addtional command for accessbility uses:
+/move - move to specific avatar or object
+/describe - describe media object, avatar or room information
+/list - list media objects or avatars in this room
+/nearby - list nearby media object from user avatar's current location
+/fov - list media objects in user avatar's current field of view
+/view - check whether a given media object is in in user avatar's current field of view
+```
+
 ### look
 The look command can be used to find objects surrounding your avatar. Objects within 6 meters of your avatar will be listed and given a number. You can access these items by using an example command such as 
 
