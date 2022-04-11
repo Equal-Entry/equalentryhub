@@ -1,28 +1,42 @@
 # Welcome to Equal Entry Hub - a fork of Mozilla Hubs Cloud seeking to make it more accessible
 
 ## Supported Commands
+
+The 3D Content Descriptions group is part of the Accessible Development of XR [adXR Workstream](https://xraccess.org/workstreams/adxr/) at XRAccess and will be used to demonstrate features that enable people who are blind or low-vision to get information about content that is used within spatial worlds. Our initial project was begun working with intern Owen Wang from Equal Entry to customize Mozilla Hubs and make it more accessible to people who are blind or low vision. 
+
 ### a11y
 The a11y command can be used to get a list of commands that are supported in the current prototype.
 
 `/a11y`
 
-When the values are returned they will be 
-```
-The addtional command for accessbility uses:
-/move - move to specific avatar or object
-/describe - describe media object, avatar or room information
-/list - list media objects or avatars in this room
-/nearby - list nearby media object from user avatar's current location
-/fov - list media objects in user avatar's current field of view
-/view - check whether a given media object is in in user avatar's current field of view
-```
+When the values are returned they will equivalent to the documentation that can be found on this site.  Ensure that if you are proposing a new feature to add to the API that it is also documented and srufaced through this command so that it can be discovered by screen reader users.  
 
-### look
-The look command can be used to find objects surrounding your avatar. Objects within 6 meters of your avatar will be listed and given a number. You can access these items by using an example command such as 
+### describe 
+describe media object, avatar or room information
+
+### fov
+/fov - list media objects in user avatar's current field of view
+
+
+### list
+The list command can be used to find objects surrounding your avatar.
+
+list media objects or avatars in this room
+
+ Objects within 6 meters of your avatar will be listed and given a number. You can access these items by using an example command such as 
 
 `/list o 1`
 
 When this command is issued the response will be...
+
+### move
+/move - move to specific avatar or object
+
+### nearby
+list nearby media object from user avatar's current location
+
+### view
+/view - check whether a given media object is in in user avatar's current field of view
 
 # [Mozilla Hubs](https://hubs.mozilla.com/)
 
