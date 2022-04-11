@@ -1,3 +1,13 @@
+# Welcome to Equal Entry Hub - a fork of Mozilla Hubs Cloud seeking to make it more accessible
+
+## Supported Commands
+### look
+The look command can be used to find objects surrounding your avatar. Objects within 6 meters of your avatar will be listed and given a number. You can access these items by using an example command such as 
+
+`/list o 1`
+
+When this command is issued the response will be...
+
 # [Mozilla Hubs](https://hubs.mozilla.com/)
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0) [![Build Status](https://travis-ci.org/mozilla/hubs.svg?branch=master)](https://travis-ci.org/mozilla/hubs) [![Discord](https://img.shields.io/discord/498741086295031808)](https://discord.gg/CzAbuGu)
