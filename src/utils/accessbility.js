@@ -56,13 +56,15 @@ export function goToGivenObject(scene, targetObject, characterController, offset
   characterController.sfx.playSoundOneShot(SOUND_TELEPORT_END);
 }
 
+// Function used to list out the commands that are supported in the chat interface
 export function a11yCommandListMsg() {
   let messageContainer = [];
+  
   messageContainer.push(
     <b>
       <FormattedMessage
-        id="chat-sidebar.system-message.move-command-desc"
-        defaultMessage="/move - move to specific avatar or object"
+        id="chat-sidebar.system-message.describe-command-desc"
+        defaultMessage="/describe - describe media object, avatar or room information"
       />
       <br />
     </b>
@@ -70,8 +72,8 @@ export function a11yCommandListMsg() {
   messageContainer.push(
     <b>
       <FormattedMessage
-        id="chat-sidebar.system-message.describe-command-desc"
-        defaultMessage="/describe - describe media object, avatar or room information"
+        id="chat-sidebar.system-message.pov-command-desc"
+        defaultMessage="/fov - list media objects in your avatar's current field of view"
       />
       <br />
     </b>
@@ -88,8 +90,8 @@ export function a11yCommandListMsg() {
   messageContainer.push(
     <b>
       <FormattedMessage
-        id="chat-sidebar.system-message.nearby-command-desc"
-        defaultMessage="/nearby - list nearby media object from user avatar's current location"
+        id="chat-sidebar.system-message.move-command-desc"
+        defaultMessage="/move - move to specific avatar or object"
       />
       <br />
     </b>
@@ -97,17 +99,18 @@ export function a11yCommandListMsg() {
   messageContainer.push(
     <b>
       <FormattedMessage
-        id="chat-sidebar.system-message.pov-command-desc"
-        defaultMessage="/fov - list media objects in user avatar's current field of view"
+        id="chat-sidebar.system-message.nearby-command-desc"
+        defaultMessage="/nearby - list nearby media objects from your avatar's current location"
       />
       <br />
     </b>
   );
+  
   messageContainer.push(
     <b>
       <FormattedMessage
         id="chat-sidebar.system-message.view-command-desc"
-        defaultMessage="/view - check whether a given media object is in in user avatar's current field of view"
+        defaultMessage="/view - check whether a given media object is in your avatar's current field of view"
       />
       <br />
     </b>
