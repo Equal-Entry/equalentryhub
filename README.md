@@ -2,11 +2,21 @@
 
 This project began in December 2021 as a Equal Entry project collaboration between [Thomas Logan](https://twitter.com/techthomas), [Roland Dubois](https://twitter.com/rdub80), and Owen Wang. We focused on creating a working prototype of new accessibility functionality that can live inside of Mozilla Hubs.  We chose Mozilla Hubs because it is an open source system that allows for open customization and collaboration. We have benefitted greatly from from the advice of the Mozilla Hubs tema and appreciate Mozilla's commitment to making a more accessible world.  
 
-This project is now part of the the 3D Content Descriptions group is part of the Accessible Development of XR [adXR Workstream](https://xraccess.org/workstreams/adxr/) at XRAccess and will be used to demonstrate features that enable people who are blind or low-vision to get information about content that is used within spatial worlds. Our initial project was begun working with intern Owen Wang from Equal Entry to customize Mozilla Hubs and make it more accessible to people who are blind or low vision. 
+This project is now part of the the 3D Content Descriptions group and part of the Accessible Development of XR [adXR Workstream](https://xraccess.org/workstreams/adxr/) at XRAccess and will be used to demonstrate features that enable people who are blind or low-vision to get information about content that is used within spatial worlds. Our initial project was begun working with intern Owen Wang from Equal Entry to customize Mozilla Hubs and make it more accessible to people who are blind or low vision. 
+
+## Demo Environments
+### Empty Room 
+In [Empty Room](https://equalentryhub.com/s4tt2eN/empty-space/) we have a large open space comprising a grassy plain surrounded by mountains.  There are no objects in this room so its a great place to start exploring scenarios inside of. 
+
+### Room with Microphone
+In [Room with Microphone](https://equalentryhub.com/zCG5RNz/room-with-microphone) we have setup an environment where there is a stage, a microphone to form a line to ask questions, and a social area in the back of the room.
+
+
+### Classroom for Advanced Scenarios
+In [School](https://equalentryhub.com/naFFnpW/school/) the world designed by Christian Van Meurs has three classrooms with different seating layouts. It also has six breakout rooms that can be used for private conversations. This world is beneficial for working on advanced scenarios. 
+
 
 ## Supported Commands
-
-
 
 ### a11y
 The a11y command can be used to get a list of commands that are supported in the current prototype.
@@ -61,6 +71,11 @@ Partial Occlusion - https://hubs.mozilla.com/avatars/V6ewezR
 The client-side code for [Mozilla Hubs](https://hubs.mozilla.com/), an online 3D collaboration platform that works for desktop, mobile, and VR platforms.
 
 [Learn more about Hubs](https://hubs.mozilla.com/docs/welcome.html)
+
+## Working with the Hubs Classroom Model
+* Download [Hubs Spoke.glb](https://www.dropbox.com/s/zuld5apu70xen7b/Hubs%20School%20v1.0.glb?dl=0)
+* Open **Scene Editor** from [Equal Entry Hub](https://equalentryhub.com/)
+* Activate 
 
 ## Getting Started
 
