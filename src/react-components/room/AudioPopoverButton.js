@@ -4,23 +4,14 @@ import styles from "./AudioPopover.scss";
 import { Popover } from "../popover/Popover";
 import { ToolbarButton } from "../input/ToolbarButton";
 import { ReactComponent as ArrowIcon } from "../icons/Arrow.svg";
-import { ReactComponent as MicrophoneIcon } from "../icons/Microphone.svg";
-import { ReactComponent as MicrophoneMutedIcon } from "../icons/MicrophoneMuted.svg";
-import { defineMessage, FormattedMessage, useIntl } from "react-intl";
+import { defineMessage, useIntl } from "react-intl";
 
 const invitePopoverTitle = defineMessage({
   id: "audio-toolbar-popover.title",
   defaultMessage: "Audio Settings"
 });
 
-export const AudioPopoverButton = ({
-  initiallyVisible,
-  content,
-  isMicrophoneMuted,
-  isMicrophoneEnabled,
-  onChangeMicrophoneMuted
-}) => {
-  const ref = useRef();
+export const AudioPopoverButton = ({ initiallyVisible, content, micButton }) => {
   const intl = useIntl();
   const title = intl.formatMessage(invitePopoverTitle);
   const popoverApiRef = useRef();
@@ -46,15 +37,7 @@ export const AudioPopoverButton = ({
             className={popoverVisible ? styles.arrowButton : styles.arrowButtonSelected}
             title={"Audio Settings"}
           />
-          <ToolbarButton
-            ref={ref}
-            icon={isMicrophoneMuted || !isMicrophoneEnabled ? <MicrophoneMutedIcon /> : <MicrophoneIcon />}
-            label={<FormattedMessage id="voice-button-container.label" defaultMessage="Voice" />}
-            preset="basic"
-            onClick={onChangeMicrophoneMuted}
-            statusColor={isMicrophoneMuted || !isMicrophoneEnabled ? "disabled" : "enabled"}
-            type={"right"}
-          />
+          {micButton}
         </div>
       )}
     </Popover>
@@ -63,8 +46,6 @@ export const AudioPopoverButton = ({
 
 AudioPopoverButton.propTypes = {
   initiallyVisible: PropTypes.bool,
-  isMicrophoneMuted: PropTypes.bool,
-  isMicrophoneEnabled: PropTypes.bool,
-  onChangeMicrophoneMuted: PropTypes.func,
-  content: PropTypes.element
+  content: PropTypes.element,
+  micButton: PropTypes.element
 };

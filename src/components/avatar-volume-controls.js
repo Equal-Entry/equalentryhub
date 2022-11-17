@@ -71,14 +71,14 @@ AFRAME.registerComponent("avatar-volume-controls", {
   volumeUp() {
     let gainMultiplier = APP.gainMultipliers.get(this.audioEl);
     const step = calcGainStepUp(gainMultiplier);
-    gainMultiplier = THREE.Math.clamp(gainMultiplier + step, 0, MAX_GAIN_MULTIPLIER);
+    gainMultiplier = THREE.MathUtils.clamp(gainMultiplier + step, 0, MAX_GAIN_MULTIPLIER);
     this.updateGainMultiplier(gainMultiplier, true);
   },
 
   volumeDown() {
     let gainMultiplier = APP.gainMultipliers.get(this.audioEl);
     const step = -calcGainStepDown(gainMultiplier);
-    gainMultiplier = THREE.Math.clamp(gainMultiplier + step, 0, MAX_GAIN_MULTIPLIER);
+    gainMultiplier = THREE.MathUtils.clamp(gainMultiplier + step, 0, MAX_GAIN_MULTIPLIER);
     this.updateGainMultiplier(gainMultiplier, true);
   },
 
@@ -94,6 +94,9 @@ AFRAME.registerComponent("avatar-volume-controls", {
   },
 
   onRemoteMuteUpdated({ detail: { muted } }) {
-    this.muteButton.object3D.visible = !muted;
+    if (!this.el.sceneEl.systems.permissions.canOrWillIfCreator("mute_users")) return;
+    this.muteButton.object3D.traverse(obj => {
+      obj.visible = !muted;
+    });
   }
 });

@@ -8,24 +8,23 @@ import { Column } from "../layout/Column";
 import { FormattedMessage } from "react-intl";
 import { SelectInputField } from "../input/SelectInputField";
 import { Row } from "../layout/Row";
-import { LevelBar } from "../misc/LevelBar";
 import { ToggleInput } from "../input/ToggleInput";
 import { Divider } from "../layout/Divider";
 import { Button } from "../input/Button";
 
 export const AudioPopoverContent = ({
-  micLevel,
+  micLevelBar,
+  speakerLevelBar,
   microphoneOptions,
-  selectedMicrophone,
   onChangeMicrophone,
   isMicrophoneEnabled,
   isMicrophoneMuted,
   onChangeMicrophoneMuted,
-  selectedSpeaker,
   speakerOptions,
   onChangeSpeaker,
-  speakerLevel,
-  onPlaySound
+  onPlaySound,
+  isAudioInputSelectAvailable,
+  isAudioOutputSelectAvailable
 }) => {
   const iconStyle = isMicrophoneEnabled ? styles.iconEnabled : styles.iconDisabled;
   return (
@@ -33,20 +32,21 @@ export const AudioPopoverContent = ({
       <p style={{ alignSelf: "start" }}>
         <FormattedMessage id="mic-setup-modal.microphone-text" defaultMessage="Microphone" />
       </p>
-      <SelectInputField
-        className={styles.selectionInput}
-        buttonClassName={styles.selectionInput}
-        value={selectedMicrophone}
-        options={microphoneOptions}
-        onChange={onChangeMicrophone}
-      />
+      {isAudioInputSelectAvailable && (
+        <SelectInputField
+          className={styles.selectionInput}
+          buttonClassName={styles.selectionInput}
+          onChange={onChangeMicrophone}
+          {...microphoneOptions}
+        />
+      )}
       <Row noWrap>
         {isMicrophoneEnabled && !isMicrophoneMuted ? (
           <MicrophoneIcon className={iconStyle} style={{ marginRight: "12px" }} />
         ) : (
           <MicrophoneMutedIcon className={iconStyle} style={{ marginRight: "12px" }} />
         )}
-        <LevelBar className={styles.levelBar} level={!isMicrophoneEnabled || isMicrophoneMuted ? 0 : micLevel} />
+        <> {micLevelBar}</>
       </Row>
       <Row nowrap>
         <ToggleInput
@@ -59,18 +59,17 @@ export const AudioPopoverContent = ({
       <p style={{ alignSelf: "start" }}>
         <FormattedMessage id="mic-setup-modal.speakers-text" defaultMessage="Speakers" />
       </p>
-      {speakerOptions?.length > 0 && (
+      {isAudioOutputSelectAvailable && (
         <SelectInputField
           className={styles.selectionInput}
           buttonClassName={styles.selectionInput}
-          value={selectedSpeaker}
-          options={speakerOptions}
           onChange={onChangeSpeaker}
+          {...speakerOptions}
         />
       )}
       <Row noWrap>
         <VolumeOff className={iconStyle} style={{ marginRight: "12px" }} />
-        <LevelBar className={styles.levelBar} level={speakerLevel} />
+        <> {speakerLevelBar} </>
       </Row>
       <Button preset="basic" onClick={onPlaySound} sm>
         <FormattedMessage id="mic-setup-modal.test-audio-button" defaultMessage="Test Audio" />
@@ -80,17 +79,17 @@ export const AudioPopoverContent = ({
 };
 
 AudioPopoverContent.propTypes = {
+  micLevelBar: PropTypes.node,
+  speakerLevelBar: PropTypes.node,
   isSoundPlaying: PropTypes.bool,
   onPlaySound: PropTypes.func,
-  micLevel: PropTypes.number,
-  speakerLevel: PropTypes.number,
   isMicrophoneEnabled: PropTypes.bool,
   isMicrophoneMuted: PropTypes.bool,
   onChangeMicrophoneMuted: PropTypes.func,
-  selectedMicrophone: PropTypes.string,
-  microphoneOptions: PropTypes.array,
+  microphoneOptions: PropTypes.object,
   onChangeMicrophone: PropTypes.func,
-  selectedSpeaker: PropTypes.string,
-  speakerOptions: PropTypes.array,
-  onChangeSpeaker: PropTypes.func
+  speakerOptions: PropTypes.object,
+  onChangeSpeaker: PropTypes.func,
+  isAudioInputSelectAvailable: PropTypes.bool,
+  isAudioOutputSelectAvailable: PropTypes.bool
 };

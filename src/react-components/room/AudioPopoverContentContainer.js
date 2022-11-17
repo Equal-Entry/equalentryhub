@@ -5,34 +5,33 @@ import { useMicrophone } from "./useMicrophone";
 import { useSpeakers } from "./useSpeakers";
 import { useSound } from "./useSound";
 import { SOUND_SPEAKER_TONE } from "../../systems/sound-effects-system";
-import { useVolumeMeter } from "../misc/useVolumeMeter";
 import { useMicrophoneStatus } from "./useMicrophoneStatus";
+import MediaDevicesManager from "../../utils/media-devices-manager";
+import { VolumeLevelBar } from "../misc/VolumeLevelBar";
+import styles from "./AudioPopover.scss";
 
 export const AudioPopoverContentContainer = ({ scene }) => {
   const { isMicMuted, toggleMute, isMicEnabled } = useMicrophoneStatus(scene);
-  const { micDeviceChanged, selectedMicDeviceId, micDevices } = useMicrophone(scene);
-  const { volume: micVolume } = useVolumeMeter({
-    analyser: scene.systems["hubs-systems"].audioSystem.outboundAnalyser
-  });
-  const { speakerDeviceChanged, selectedSpeakersDeviceId, speakerDevices } = useSpeakers(scene);
-  const { playSound, soundVolume } = useSound({
+  const { micDeviceChanged, micDevices } = useMicrophone(scene);
+  const { speakerDeviceChanged, speakerDevices } = useSpeakers();
+  const { playSound } = useSound({
     scene,
     sound: SOUND_SPEAKER_TONE
   });
   return (
     <AudioPopoverContent
-      micLevel={micVolume}
+      micLevelBar={<VolumeLevelBar scene={scene} type="mic" className={styles.levelBar} />}
+      speakerLevelBar={<VolumeLevelBar scene={scene} type="mixer" className={styles.levelBar} />}
       microphoneOptions={micDevices}
-      selectedMicrophone={selectedMicDeviceId}
       onChangeMicrophone={micDeviceChanged}
       isMicrophoneEnabled={isMicEnabled}
       isMicrophoneMuted={isMicMuted}
       onChangeMicrophoneMuted={toggleMute}
-      selectedSpeaker={selectedSpeakersDeviceId}
       speakerOptions={speakerDevices}
       onChangeSpeaker={speakerDeviceChanged}
-      speakerLevel={soundVolume}
       onPlaySound={playSound}
+      isAudioInputSelectAvailable={MediaDevicesManager.isAudioInputSelectEnabled}
+      isAudioOutputSelectAvailable={MediaDevicesManager.isAudioOutputSelectEnabled}
     />
   );
 };

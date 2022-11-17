@@ -241,7 +241,6 @@ export class DialogAdapter extends EventEmitter {
   async connect({
     serverUrl,
     roomId,
-    joinToken,
     serverParams,
     scene,
     clientId,
@@ -251,7 +250,6 @@ export class DialogAdapter extends EventEmitter {
   }) {
     this._serverUrl = serverUrl;
     this._roomId = roomId;
-    this._joinToken = joinToken;
     this._serverParams = serverParams;
     this._clientId = clientId;
     this.scene = scene;
@@ -467,7 +465,6 @@ export class DialogAdapter extends EventEmitter {
     await this.connect({
       serverUrl: newServerUrl,
       roomId: this._roomId,
-      joinToken: APP.hubChannel.token,
       serverParams,
       scene: this.scene,
       clientId: this._clientId,
@@ -747,7 +744,7 @@ export class DialogAdapter extends EventEmitter {
       device: this._device,
       rtpCapabilities: this._mediasoupDevice.rtpCapabilities,
       sctpCapabilities: this._useDataChannel ? this._mediasoupDevice.sctpCapabilities : undefined,
-      token: this._joinToken
+      token: APP.hubChannel.token
     });
 
     if (this._localMediaStream) {
@@ -780,6 +777,7 @@ export class DialogAdapter extends EventEmitter {
             // stopTracks = false because otherwise the track will end during a temporary disconnect
             this._micProducer = await this._sendTransport.produce({
               track,
+              pause: !this._micShouldBeEnabled,
               stopTracks: false,
               codecOptions: { opusStereo: false, opusDtx: true },
               zeroRtpOnPause: true,
@@ -790,10 +788,6 @@ export class DialogAdapter extends EventEmitter {
               this.emitRTCEvent("info", "RTC", () => `Mic transport closed`);
               this._micProducer = null;
             });
-
-            if (!this._micShouldBeEnabled) {
-              this._micProducer.pause();
-            }
 
             this.emit("mic-state-changed", { enabled: this.isMicEnabled });
           }
@@ -910,10 +904,6 @@ export class DialogAdapter extends EventEmitter {
     }
   }
 
-  set micShouldBeEnabled(enabled) {
-    this._micShouldBeEnabled = enabled;
-  }
-
   enableMicrophone(enabled) {
     if (!this._micProducer) {
       console.error("Tried to toggle mic but there's no producer.");
@@ -962,7 +952,7 @@ export class DialogAdapter extends EventEmitter {
       .request("kick", {
         room_id: this.room,
         user_id: clientId,
-        token: this._joinToken
+        token: APP.hubChannel.token
       })
       .then(() => {
         document.body.dispatchEvent(new CustomEvent("kicked", { detail: { clientId: clientId } }));

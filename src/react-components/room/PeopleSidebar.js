@@ -13,7 +13,11 @@ import { ReactComponent as VRIcon } from "../icons/VR.svg";
 import { ReactComponent as VolumeOffIcon } from "../icons/VolumeOff.svg";
 import { ReactComponent as VolumeHighIcon } from "../icons/VolumeHigh.svg";
 import { ReactComponent as VolumeMutedIcon } from "../icons/VolumeMuted.svg";
+<<<<<<< HEAD
 import { ReactComponent as PeopleIcon } from "../icons/People.svg";
+=======
+import { ReactComponent as HandRaisedIcon } from "../icons/HandRaised.svg";
+>>>>>>> upstream/hubs-cloud
 import { List, ButtonListItem } from "../layout/List";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SOUND_TELEPORT_END } from "../../systems/sound-effects-system";
@@ -152,6 +156,7 @@ export function PeopleSidebar({ people, onSelectPerson, onClose, showMuteAll, on
               type="button"
               onClick={e => onSelectPerson(person, e)}
             >
+              {person.hand_raised && <HandRaisedIcon />}
               {<DeviceIcon title={getDeviceLabel(person.context, intl)} />}
               {!person.context.discord && VoiceIcon && <VoiceIcon title={getVoiceLabel(person.micPresence, intl)} />}
               <p>{getPersonName(person, intl)}</p>
