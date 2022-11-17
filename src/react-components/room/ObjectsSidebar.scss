@@ -3,7 +3,7 @@
 :local(.object) {
   font-size: theme.$font-size-sm;
 
-  & > * {
+  &>* {
     margin-right: 8px;
 
     &:last-child {
@@ -26,7 +26,6 @@
     color: theme.$text2-color;
   }
 }
-<<<<<<< HEAD
 
 :local(.description) {
   display: flex;
@@ -34,5 +33,3 @@
   justify-content: flex-end;
   margin-right: 10px;
 }
-=======
->>>>>>> upstream/hubs-cloud

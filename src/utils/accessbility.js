@@ -149,10 +149,13 @@ export function parseDescription(object) {
 }
 
 export function setupCameraFrustum() {
-  const camera = document.getElementById("viewing-camera").components.camera.camera;
+  // const camera = document.getElementById("viewing-camera").components.camera.camera;
+  const camera = document.getElementById("viewing-camera").object3D
   var frustum = new THREE.Frustum();
   frustum.setFromProjectionMatrix(
-    new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse)
+    // new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse)
+    camera.matrix
   );
+  console.log('frustum?');
   return frustum;
 }

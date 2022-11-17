@@ -13,11 +13,7 @@ import { ReactComponent as VRIcon } from "../icons/VR.svg";
 import { ReactComponent as VolumeOffIcon } from "../icons/VolumeOff.svg";
 import { ReactComponent as VolumeHighIcon } from "../icons/VolumeHigh.svg";
 import { ReactComponent as VolumeMutedIcon } from "../icons/VolumeMuted.svg";
-<<<<<<< HEAD
-import { ReactComponent as PeopleIcon } from "../icons/People.svg";
-=======
 import { ReactComponent as HandRaisedIcon } from "../icons/HandRaised.svg";
->>>>>>> upstream/hubs-cloud
 import { List, ButtonListItem } from "../layout/List";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SOUND_TELEPORT_END } from "../../systems/sound-effects-system";

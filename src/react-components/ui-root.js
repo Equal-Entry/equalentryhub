@@ -201,21 +201,7 @@ class UIRoot extends Component {
     objectSrc: "",
     sidebarId: null,
     presenceCount: 0,
-<<<<<<< HEAD
-
-    showRename: false,
-    renameTarget: null,
-    deselectObject: null,
-    targetObjectIsPinned: false,
-
-    showEditDesciption: false,
-    startVoiceInput: false,
-
-    showDescTargetObj: null,
-    showObjectDesciption: false
-=======
     chatInputEffect: () => {}
->>>>>>> upstream/hubs-cloud
   };
 
   constructor(props) {
@@ -1434,7 +1420,6 @@ class UIRoot extends Component {
                             this.setSidebar(null);
                           }
                         }}
-                        onClickEditDesc
                         onClickRename={(activeObject, deselectObject, isPinned) => {
                           this.setState({ showRename: true });
                           this.setState({ renameTarget: activeObject });
@@ -1492,11 +1477,7 @@ class UIRoot extends Component {
                           canSpawnMessages={entered && this.props.hubChannel.can("spawn_and_move_media")}
                           scene={this.props.scene}
                           onClose={() => this.setSidebar(null)}
-<<<<<<< HEAD
-                          onStartVoiceInput={this.state.startVoiceInput}
-=======
                           inputEffect={this.state.chatInputEffect}
->>>>>>> upstream/hubs-cloud
                         />
                       )}
                       {this.state.sidebarId === "objects" && (

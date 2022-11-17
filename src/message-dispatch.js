@@ -8,6 +8,7 @@ import { EventTarget } from "event-target-shim";
 import { ExitReason } from "./react-components/room/ExitedRoomScreen";
 import { LogMessageType } from "./react-components/room/ChatSidebar";
 import { createNetworkedEntity } from "./systems/netcode";
+import { getMyself, setupCameraFrustum } from "./utils/accessbility"
 
 let uiRoot;
 // Handles user-entered messages
