@@ -386,6 +386,8 @@ export async function getSceneUrlForHub(hub) {
   return sceneUrl;
 }
 
+// adding object to the environment
+
 export async function updateEnvironmentForHub(hub, entryManager) {
   console.log("Updating environment for hub");
   const sceneUrl = await getSceneUrlForHub(hub);
