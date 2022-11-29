@@ -188,9 +188,9 @@ export function ChatSidebarContainer({ scene, canSpawnMessages, presences, occup
           sendMessage(e.target.value);
           setMessage("");
           // intentionally only doing this on "enter" press and not clicking of send button
-          if (e.target.value.startsWith("/")) {
-            onClose();
-          }
+          // if (e.target.value.startsWith("/")) {
+          //   onClose();
+          // }
         }
       } else if (e.key === "Escape") {
         onClose();
