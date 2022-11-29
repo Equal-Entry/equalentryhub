@@ -4,9 +4,14 @@ import { FormattedMessage } from "react-intl";
 import { SOUND_TELEPORT_END } from "./../systems/sound-effects-system";
 
 export function getAvatarFromName(name) {
-  for (let a of document.querySelectorAll("[networked-avatar]")) {
-    var el = document.querySelector("#" + a.id);
-    if (name.toLowerCase().trim() == el.components["player-info"].displayName.toLowerCase().trim()) return el;
+  const players = window.APP.componentRegistry["player-info"]
+  for (let a of players) {
+    var el = a.el;
+    const notUser = el.id != "avatar-rig"
+    if (notUser && name && el.children[3].components['name-tag'].displayName) {
+      const nameMatch = name.toLowerCase().trim() === el.children[3].components['name-tag'].displayName.toLowerCase().trim()
+      if (nameMatch) return el;  
+    }
   }
   return null;
 }

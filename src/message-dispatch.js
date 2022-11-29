@@ -234,9 +234,9 @@ export default class MessageDispatch extends EventTarget {
 
                 var el;
                 try {
-                  for (let p of window.APP.componentRegistry["player-info"]) {
-                    if (fullName.toLowerCase() == p.displayName.toLowerCase()) {
-                      el = getAvatarFromName(p.displayName);
+                  for (let p of document.querySelectorAll("[networked-avatar]")) {
+                    if (fullName.toLowerCase() === p.children[3].components['name-tag'].displayName.toLowerCase()) {
+                      el = getAvatarFromName(p.children[3].components['name-tag'].displayName);
                     }
                   }
 
@@ -405,7 +405,7 @@ export default class MessageDispatch extends EventTarget {
                 avatarMap.clear();
                 for (let a of document.querySelectorAll("[networked-avatar]")) {
                   if (a.id !== "avatar-rig") {
-                    const name = document.querySelector("#" + a.id).components["player-info"].displayName.trim();
+                    const name = document.querySelector("#" + a.id).children[3].components['name-tag'].displayName.trim();
                     avatarMap.set(index.toString(), name);
                     msg.push(`${index} - ${name}`);
                     index++;
