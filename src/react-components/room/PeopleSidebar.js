@@ -9,6 +9,7 @@ import { ReactComponent as StarIcon } from "../icons/Star.svg";
 import { ReactComponent as DesktopIcon } from "../icons/Desktop.svg";
 import { ReactComponent as DiscordIcon } from "../icons/Discord.svg";
 import { ReactComponent as PhoneIcon } from "../icons/Phone.svg";
+import { ReactComponent as PeopleIcon } from "../icons/People.svg";
 import { ReactComponent as VRIcon } from "../icons/VR.svg";
 import { ReactComponent as VolumeOffIcon } from "../icons/VolumeOff.svg";
 import { ReactComponent as VolumeHighIcon } from "../icons/VolumeHigh.svg";
