@@ -378,6 +378,7 @@ function runMigration(version, json) {
 
 let ktxLoader;
 let dracoLoader;
+let extras;
 
 class GLTFHubsPlugin {
   constructor(parser, jsonPreprocessor) {
@@ -444,7 +445,11 @@ class GLTFHubsPlugin {
       const materialQuality = window.APP.store.state.preferences.materialQualitySetting;
       updateMaterials(object, material => convertStandardMaterial(material, materialQuality));
     });
-
+    // storing extras to gltf 
+    if (gltf.asset.extras) {
+      // gltf.scene.extras = gltf.asset.extras;
+      extras = gltf.asset.extras
+    }
     // Replace animation target node name with the node uuid.
     // I assume track name is 'nodename.property'.
     if (gltf.animations) {
@@ -810,6 +815,17 @@ AFRAME.registerComponent("gltf-model-plus", {
       this.disposeLastInflatedEl();
 
       this.model = gltf.scene;
+
+      //Setting extras information to the entity
+      if (extras) {
+        if (extras.accessibility) {
+          this.el.components['media-loader'].data.description = JSON.stringify(extras.accessibility);
+        }
+        if (extras.title) {
+          this.el.components['media-loader'].data.mediaName = extras.title;
+        }
+        console.log(this.el)
+      }
 
       if (gltf.animations.length > 0) {
         this.el.setAttribute("animation-mixer", {});
