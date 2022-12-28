@@ -11,28 +11,29 @@ import { IconButton } from "../input/IconButton";
 import { Button } from "../input/Button";
 
 export function ShowDescriptionModal({ onCancel, targetObject }) {
-  const name = targetObject.components["media-loader"].data.mediaName;
+  const name = targetObject.components["accessibility"].data["dc:title"];
   const role = targetObject.components["media-loader"].data.role;
-  const descrption = [];
-  var contentToSpeech = `Object ${name}, ${role}: `;
-  try {
-    const desc = JSON.parse(targetObject.components["media-loader"].data.description);
-    for (let key in desc) {
-      contentToSpeech = contentToSpeech + ` ${key}: ${desc[key]}.`;
-      descrption.push(
-        <InputField label={key} style={{ textAlign: "left" }}>
-          {desc[key]}
-        </InputField>
-      );
-    }
-  } catch (e) {
-    contentToSpeech = contentToSpeech + ` no description.`;
-    descrption.push(
-      <InputField label={<FormattedMessage id="objects-sidebar.object-decs" defaultMessage="Object Description" />}>
-        <FormattedMessage id="objects-sidebar.object-no-decs" defaultMessage="This object has no description yet." />
-      </InputField>
-    );
-  }
+  const description = targetObject.components["accessibility"].data["dc:description"] ? targetObject.components["accessibility"].data["dc:description"] : 'No description';
+  // const descrption = [];
+  var contentToSpeech = `Object ${name}, ${role}: ${description}`;
+  // try {
+  //   const desc = JSON.parse(targetObject.components["media-loader"].data.description);
+  //   for (let key in desc) {
+  //     contentToSpeech = contentToSpeech + ` ${key}: ${desc[key]}.`;
+  //     descrption.push(
+  //       <InputField label={key} style={{ textAlign: "left" }}>
+  //         {desc[key]}
+  //       </InputField>
+  //     );
+  //   }
+  // } catch (e) {
+  //   contentToSpeech = contentToSpeech + ` no description.`;
+  //   descrption.push(
+  //     <InputField label={<FormattedMessage id="objects-sidebar.object-decs" defaultMessage="Object Description" />}>
+  //       <FormattedMessage id="objects-sidebar.object-no-decs" defaultMessage="This object has no description yet." />
+  //     </InputField>
+  //   );
+  // }
 
   useEffect(() => {
     responsiveVoice.speak(contentToSpeech);
@@ -62,9 +63,15 @@ export function ShowDescriptionModal({ onCancel, targetObject }) {
             >
               {role}
             </InputField>
-            {descrption}
+            <InputField
+              style={{ textAlign: "left" }}
+              label={<FormattedMessage id="room-sidebar.object-description" defaultMessage="Description" />}
+            >
+              {description}
+            </InputField>
+            {/* {descrption} */}
           </Column>
-          <Button sm style={{ "min-height": "90px" }} onClick={() => responsiveVoice.speak(contentToSpeech)}>
+          {/* <Button sm style={{ "min-height": "90px" }} onClick={() => responsiveVoice.speak(contentToSpeech)}>
             <Column padding center>
               <div style={{ marginLeft: "5px" }}>
                 <VoiceIcon width={36} height={36} />
@@ -72,7 +79,7 @@ export function ShowDescriptionModal({ onCancel, targetObject }) {
 
               <FormattedMessage id="description-modal.voice" defaultMessage="Voice" />
             </Column>
-          </Button>
+          </Button> */}
         </Row>
         <Row padding="sm">
           <span>&nbsp;&nbsp;&nbsp;</span>

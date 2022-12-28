@@ -21,7 +21,7 @@ AFRAME.registerComponent("description-media-button", {
 
       const hoveredEl = interaction.state.rightRemote.hovered || interaction.state.leftRemote.hovered;
       if (!!hoveredEl) {
-        const name = hoveredEl.components["media-loader"].data.mediaName;
+        const name = hoveredEl.components["accessibility"].data["dc:title"];
         const role = hoveredEl.components["media-loader"].data.role;
         var contentToSpeech = `${role} ${name}: `;
         try {

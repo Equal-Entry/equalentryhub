@@ -61,12 +61,15 @@ export function ObjectsSidebarContainer({ onClose, hubChannel }) {
       >
         <Column padding>
           <InputField label={<FormattedMessage id="room-sidebar.object-name" defaultMessage="Name" />}>
-            {selectedDescObj.el.components["media-loader"].data.mediaName}
+            {selectedDescObj.el.components["accessibility"].data["dc:title"]}
           </InputField>
           <InputField label={<FormattedMessage id="room-sidebar.object-role" defaultMessage="Role" />}>
             {selectedDescObj.el.components["media-loader"].data.role}
           </InputField>
-          {descInfo}
+          <InputField label={<FormattedMessage id="room-sidebar.object-description" defaultMessage="Description" />}>
+            {selectedDescObj.el.components["accessibility"].data["dc:description"]}
+          </InputField>
+          {/* {descInfo} */}
         </Column>
       </Sidebar>
     );

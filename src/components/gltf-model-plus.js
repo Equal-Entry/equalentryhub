@@ -376,9 +376,37 @@ function runMigration(version, json) {
   }
 }
 
+let title;
+let description;
+let xmpInfo = {};
+let extras;
+
+class GLTFInfo {
+  constructor(parser) {
+    this.parser = parser;
+    this.name = "glTF_info"
+  }
+
+  afterRoot(gltf) {
+    const parser = this.parser
+    
+    // getting info from Sketchfab model
+    if (gltf.asset.extras) {
+      extras = gltf.asset.extras
+    }
+
+    // Custom code reading data from xmp extension
+    if (parser.json.extensions && parser.json.extensions.KHR_xmp_json_ld) {
+      xmpInfo = parser.json.extensions.KHR_xmp_json_ld.packets[0]
+
+      //title => parser.json.extensions.KHR_xmp_json_ld.packets[0]['dc:title']['rdf:_1']['@value']
+      //description => parser.json.extensions.KHR_xmp_json_ld.packets[0]['dc:description']['rdf:_1']['@value']  
+    }
+  }
+}
+
 let ktxLoader;
 let dracoLoader;
-let extras;
 
 class GLTFHubsPlugin {
   constructor(parser, jsonPreprocessor) {
@@ -445,11 +473,7 @@ class GLTFHubsPlugin {
       const materialQuality = window.APP.store.state.preferences.materialQualitySetting;
       updateMaterials(object, material => convertStandardMaterial(material, materialQuality));
     });
-    // storing extras to gltf 
-    if (gltf.asset.extras) {
-      // gltf.scene.extras = gltf.asset.extras;
-      extras = gltf.asset.extras
-    }
+
     // Replace animation target node name with the node uuid.
     // I assume track name is 'nodename.property'.
     if (gltf.animations) {
@@ -661,7 +685,8 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
     .register(parser => new GLTFHubsPlugin(parser, jsonPreprocessor))
     .register(parser => new GLTFHubsLightMapExtension(parser))
     .register(parser => new GLTFHubsTextureBasisExtension(parser))
-    .register(parser => new GLTFMozTextureRGBE(parser, new RGBELoader().setDataType(THREE.HalfFloatType)));
+    .register(parser => new GLTFMozTextureRGBE(parser, new RGBELoader().setDataType(THREE.HalfFloatType)))
+    .register(parser => new GLTFInfo(parser));
 
   // TODO some models are loaded before the renderer exists. This is likely things like the camera tool and loading cube.
   // They don't currently use KTX textures but if they did this would be an issue. Fixing this is hard but is part of
@@ -818,14 +843,26 @@ AFRAME.registerComponent("gltf-model-plus", {
 
       //Setting extras information to the entity
       if (extras) {
+        this.el.setAttribute("accessibility", {})
         if (extras.accessibility) {
           this.el.components['media-loader'].data.description = JSON.stringify(extras.accessibility);
         }
         if (extras.title) {
           this.el.components['media-loader'].data.mediaName = extras.title;
+          this.el.components["accessibility"].data["dc:title"] = extras.title;
         }
-        console.log(this.el)
+        // console.log(this.el)
       }
+      
+
+      // adding info to new component 'accessibility'
+      for (const key in xmpInfo) {
+        if (key.includes("dc:")) {
+          this.el.setAttribute("accessibility", {})
+          this.el.components["accessibility"].data[key] = xmpInfo[key]["rdf:_1"]["@value"]
+        }
+      }
+      xmpInfo = {}
 
       if (gltf.animations.length > 0) {
         this.el.setAttribute("animation-mixer", {});

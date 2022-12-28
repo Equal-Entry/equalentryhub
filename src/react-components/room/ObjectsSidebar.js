@@ -47,6 +47,10 @@ const objectTypeNames = defineMessages({
 export function ObjectsSidebarItem({ selected, object, onSelectDesc, ...rest }) {
   const intl = useIntl();
   const ObjectTypeIcon = getObjectIcon(object.type);
+  
+  if (object.el.components.accessibility && object.el.components.accessibility.data["dc:title"]) {
+    object.name = `${object.el.components.accessibility.data["dc:title"]}, 3D Model`
+  }
 
   return (
     <ButtonListItem
