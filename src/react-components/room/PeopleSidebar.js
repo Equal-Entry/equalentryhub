@@ -19,6 +19,7 @@ import { List, ButtonListItem } from "../layout/List";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SOUND_TELEPORT_END } from "../../systems/sound-effects-system";
 import { getAvatarFromName, goToGivenObject } from "../../utils/accessbility";
+import { PermissionNotification } from "./PermissionNotifications";
 
 function getDeviceLabel(ctx, intl) {
   if (ctx) {
@@ -118,9 +119,8 @@ function moveToActionbyButton(people, person, intl, e) {
   }
 }
 
-export function PeopleSidebar({ people, onSelectPerson, onClose, showMuteAll, onMuteAll }) {
+export function PeopleSidebar({ people, onSelectPerson, onClose, showMuteAll, onMuteAll, canVoiceChat, voiceChatEnabled, isMod }) {
   const intl = useIntl();
-
   return (
     <Sidebar
       title={
@@ -136,11 +136,11 @@ export function PeopleSidebar({ people, onSelectPerson, onClose, showMuteAll, on
           <IconButton onClick={onMuteAll}>
             <FormattedMessage id="people-sidebar.mute-all-button" defaultMessage="Mute All" />
           </IconButton>
-        ) : (
-          undefined
-        )
+        ) : undefined
       }
     >
+      {!canVoiceChat && <PermissionNotification permission={"voice_chat"} />}
+      {!voiceChatEnabled && isMod && <PermissionNotification permission={"voice_chat"} isMod={true} />}
       <List>
         {people.map(person => {
           const DeviceIcon = getDeviceIconComponent(person.context);
@@ -194,10 +194,14 @@ PeopleSidebar.propTypes = {
   onSelectPerson: PropTypes.func,
   showMuteAll: PropTypes.bool,
   onMuteAll: PropTypes.func,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  canVoiceChat: PropTypes.bool,
+  voiceChatEnabled: PropTypes.bool,
+  isMod: PropTypes.bool
 };
 
 PeopleSidebar.defaultProps = {
   people: [],
-  onSelectPerson: () => {}
+  onSelectPerson: () => {},
+  isMod: false
 };

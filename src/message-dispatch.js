@@ -7,7 +7,7 @@ import ducky from "./assets/models/DuckyMesh.glb";
 import { EventTarget } from "event-target-shim";
 import { ExitReason } from "./react-components/room/ExitedRoomScreen";
 import { LogMessageType } from "./react-components/room/ChatSidebar";
-import { createNetworkedEntity } from "./systems/netcode";
+import { createNetworkedEntity } from "./utils/create-networked-entity";
 import { getMyself, setupCameraFrustum } from "./utils/accessbility"
 
 let uiRoot;
@@ -33,6 +33,16 @@ export default class MessageDispatch extends EventTarget {
   addToPresenceLog(entry) {
     entry.key = Date.now().toString();
 
+    const lastEntry = this.presenceLogEntries.length > 0 && this.presenceLogEntries[this.presenceLogEntries.length - 1];
+    if (lastEntry && entry.type === "permission" && lastEntry.type === "permission") {
+      if (
+        lastEntry.body.permission === entry.body.permission &&
+        parseInt(entry.key) - parseInt(lastEntry.key) < 10000
+      ) {
+        this.presenceLogEntries.pop();
+      }
+    }
+
     this.presenceLogEntries.push(entry);
     this.remountUI({ presenceLogEntries: this.presenceLogEntries });
     if (entry.type === "chat" && this.scene.is("loaded")) {
@@ -47,7 +57,7 @@ export default class MessageDispatch extends EventTarget {
       setTimeout(() => {
         this.presenceLogEntries.splice(this.presenceLogEntries.indexOf(entry), 1);
         this.remountUI({ presenceLogEntries: this.presenceLogEntries });
-      }, 5000);
+      }, 1000);
     }, 20000);
   }
 

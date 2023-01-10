@@ -165,15 +165,8 @@ export function ObjectMenuContainer({
   onClickRename,
   onClickEditDesc
 }) {
-  const {
-    objects,
-    activeObject,
-    deselectObject,
-    selectNextObject,
-    selectPrevObject,
-    toggleLights,
-    lightsEnabled
-  } = useObjectList();
+  const { objects, activeObject, deselectObject, selectNextObject, selectPrevObject, toggleLights, lightsEnabled } =
+    useObjectList();
 
   let menuItems;
 
