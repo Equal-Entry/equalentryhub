@@ -376,8 +376,8 @@ function runMigration(version, json) {
   }
 }
 
-let title;
-let description;
+// let title;
+// let description;
 let xmpInfo = {};
 let extras;
 
