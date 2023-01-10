@@ -381,10 +381,10 @@ let description;
 let xmpInfo = {};
 let extras;
 
-class GLTFInfo {
+class GLTFAccessibilityInfo {
   constructor(parser) {
     this.parser = parser;
-    this.name = "glTF_info"
+    this.name = "glTF_accessibility_info"
   }
 
   afterRoot(gltf) {
@@ -473,6 +473,7 @@ class GLTFHubsPlugin {
       const materialQuality = window.APP.store.state.preferences.materialQualitySetting;
       updateMaterials(object, material => convertStandardMaterial(material, materialQuality));
     });
+
 
     // Replace animation target node name with the node uuid.
     // I assume track name is 'nodename.property'.
@@ -686,7 +687,7 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
     .register(parser => new GLTFHubsLightMapExtension(parser))
     .register(parser => new GLTFHubsTextureBasisExtension(parser))
     .register(parser => new GLTFMozTextureRGBE(parser, new RGBELoader().setDataType(THREE.HalfFloatType)))
-    .register(parser => new GLTFInfo(parser));
+    .register(parser => new GLTFAccessibilityInfo(parser));
 
   // TODO some models are loaded before the renderer exists. This is likely things like the camera tool and loading cube.
   // They don't currently use KTX textures but if they did this would be an issue. Fixing this is hard but is part of
@@ -841,28 +842,33 @@ AFRAME.registerComponent("gltf-model-plus", {
 
       this.model = gltf.scene;
 
+      // setting accessibility component
+      this.el.setAttribute("accessibility", {})
+
+      if (this.el.components['media-loader']) {
+        this.el.components["accessibility"].data["dc:title"] = this.el.components["media-loader"].data["mediaName"];
+      }
+
       //Setting extras information to the entity
       if (extras) {
-        this.el.setAttribute("accessibility", {})
         if (extras.accessibility) {
-          this.el.components['media-loader'].data.description = JSON.stringify(extras.accessibility);
+          for (const key in extras.accessibility) {
+            this.el.components["accessibility"].data[`dc:${key.toLowerCase()}`] = extras.accessibility[key]
+          }
         }
         if (extras.title) {
-          this.el.components['media-loader'].data.mediaName = extras.title;
           this.el.components["accessibility"].data["dc:title"] = extras.title;
         }
-        // console.log(this.el)
       }
-      
 
       // adding info to new component 'accessibility'
       for (const key in xmpInfo) {
         if (key.includes("dc:")) {
-          this.el.setAttribute("accessibility", {})
           this.el.components["accessibility"].data[key] = xmpInfo[key]["rdf:_1"]["@value"]
         }
       }
       xmpInfo = {}
+      extras = {}
 
       if (gltf.animations.length > 0) {
         this.el.setAttribute("animation-mixer", {});

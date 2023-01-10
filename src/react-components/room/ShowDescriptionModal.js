@@ -11,7 +11,10 @@ import { IconButton } from "../input/IconButton";
 import { Button } from "../input/Button";
 
 export function ShowDescriptionModal({ onCancel, targetObject }) {
-  const name = targetObject.components["accessibility"].data["dc:title"];
+  let name = ""
+  if (targetObject.components["accessibility"].data["dc:title"]) {
+    name = targetObject.components["accessibility"].data["dc:title"];
+  }
   const role = targetObject.components["media-loader"].data.role;
   const description = targetObject.components["accessibility"].data["dc:description"] ? targetObject.components["accessibility"].data["dc:description"] : 'No description';
   // const descrption = [];

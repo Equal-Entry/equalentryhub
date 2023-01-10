@@ -6,22 +6,12 @@ import { Column } from "../layout/Column";
 import { TextAreaInputField } from "../input/TextAreaInputField";
 import { Row } from "../layout/Row";
 
-const MAIN_INFO = "Description";
-// const GENERAL_INFO = "Custom";
-const NAME_INFO = 'Name';
-const ROLE_INFO = 'Role'
-// const DIMENSIONS_INFO = 'Dimensions'
+const NAME_INFO = "Name";
+const DESCRIPTION_INFO = "Description";
 
 export function ObjectDescribeModal({ onCancel, targetObject, isPinned }) {
-  //change how info is accessed
-  // const oldName = targetObject.el.components["media-loader"].data.mediaName;
-  const oldName = targetObject.el.components["accessibility"] ? targetObject.el.components["accessibility"].data["dc:title"] : '';
-  const oldDescription = targetObject.el.components["accessibility"] ? targetObject.el.components["accessibility"].data["dc:description"] : '';
-  // const dimensions = targetObject.el.components["media-loader"].contentBounds;
-  // const dimensionsString = `${Math.round(dimensions.x * 10)/10} x ${Math.round(dimensions.y * 10)/10} x ${Math.round(dimensions.z * 10)/10}`;
-  // const [genInput, setGenInput] = useState("");
-  const [descriptionInput, setDescriptionInput] = useState(oldDescription);
-  const [nameInput, setNameInput] = useState(oldName);
+  const [descInput, setDescInput] = useState(targetObject.el.components.accessibility.data["dc:description"]);
+  const [nameInput, setNameInput] = useState(targetObject.el.components.accessibility.data["dc:title"]);
 
   return (
     <Modal title="Describe This Object">
@@ -33,27 +23,19 @@ export function ObjectDescribeModal({ onCancel, targetObject, isPinned }) {
         />
 
         <TextAreaInputField
-          label={MAIN_INFO}
-          onChange={e => setDescriptionInput(e.target.value)}
-          defaultValue={descriptionInput}
+          label={DESCRIPTION_INFO}
+          onChange={e => setDescInput(e.target.value)}
+          defaultValue={descInput}
           minRows={3}
         />
-
-        {/* <TextAreaInputField
-          label={GENERAL_INFO}
-          onChange={e => setGenInput(e.target.value)}
-          defaultValue={oldJson[GENERAL_INFO]}
-          minRows={3}
-        /> */}
-
         <Row padding="sm">
           <AcceptButton
             sm
             onClick={() => {
               if (!NAF.utils.isMine(targetObject.el)) NAF.utils.takeOwnership(targetObject.el);
 
-              targetObject.el.components["accessibility"].data["dc:description"] = descriptionInput;
-              targetObject.el.components["accessibility"].data["dc:title"] = nameInput;
+              targetObject.el.components.accessibility.data["dc:description"] = descInput
+              targetObject.el.components.accessibility.data["dc:title"] = nameInput
 
               if (isPinned) window.APP.pinningHelper.setPinned(targetObject.el, true);
 

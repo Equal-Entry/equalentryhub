@@ -221,9 +221,11 @@ export const addMedia = (
     role = "3D Model";
   } else if (contentOrigin == ObjectContentOrigins.FILE) {
     mediaName = `${src.name.split(".")[0]}`;
-    role = `${src.name.split(".")[1].toUpperCase()} File`;
-    if (src.name.split(".")[1] === "gltf") {
-      role = "3D Model"
+    let fileType = src.name.split(".")[1].toUpperCase()
+    if (fileType === "GLTF" || fileType === "GLB") {
+      role = '3D Model'
+    } else {
+      role = `${src.name.split(".")[1].toUpperCase()} File`;
     }
   } else if (src.constructor.name == "MediaStream") {
     var playerName;
@@ -235,8 +237,6 @@ export const addMedia = (
     mediaName = `${playerName}'s`;
     role = "Shared Screen";
   }
-
- 
 
   entity.setAttribute("media-loader", {
     fitToBox,
@@ -300,7 +300,7 @@ export const cloneMedia = (sourceEl, template, src = null, networked = true, lin
   if (!src) {
     ({ src } = sourceEl.components["media-loader"].data);
   }
-  //get data
+
   const { contentSubtype, fitToBox, mediaOptions } = sourceEl.components["media-loader"].data;
 
   return addMedia(
